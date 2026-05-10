@@ -1,859 +1,818 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Depósito de Colecciones Zoológicas - MNHNCL</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
+<title>Depósito de Colecciones Zoológicas - MNHNCL</title>
 
-        :root{
-            --primary-color:#004d40;
-            --accent-color:#c62828;
-            --bg-color:#f4f7f6;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
-        body{
-            font-family:'Segoe UI', Helvetica, Arial, sans-serif;
-            margin:0;
-            padding:20px;
-            background-color:var(--bg-color);
-            color:#333;
-        }
+<style>
 
-        .container{
-            max-width:1200px;
-            margin:auto;
-            background:white;
-            padding:35px;
-            border-radius:8px;
-            box-shadow:0 4px 20px rgba(0,0,0,0.08);
-        }
+:root{
+    --primary-color:#004d40;
+    --accent-color:#c62828;
+    --bg-color:#f4f7f6;
+}
 
-        .header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            border-bottom:3px solid var(--primary-color);
-            padding-bottom:20px;
-            margin-bottom:25px;
-        }
+body{
+    font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+    margin:0;
+    padding:20px;
+    background-color:var(--bg-color);
+    color:#333;
+}
 
-        .header img{
-            height:105px;
-            width:auto;
-            object-fit:contain;
-        }
+.container{
+    max-width:1300px;
+    margin:auto;
+    background:white;
+    padding:35px;
+    border-radius:8px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
 
-        .header-text{
-            text-align:center;
-            flex-grow:1;
-        }
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:3px solid var(--primary-color);
+    padding-bottom:20px;
+    margin-bottom:25px;
+}
 
-        .header-text h2{
-            margin:0;
-            color:var(--primary-color);
-            font-size:1.6em;
-            text-transform:uppercase;
-            letter-spacing:1px;
-        }
+.header img{
+    height:105px;
+    width:auto;
+    object-fit:contain;
+}
 
-        .header-text p{
-            margin:3px 0;
-            font-weight:bold;
-            color:#444;
-            font-size:1.1em;
-        }
+.header-text{
+    text-align:center;
+    flex-grow:1;
+}
 
-        .header-text .sub-p{
-            font-weight:normal;
-            color:#666;
-            font-size:1em;
-        }
+.header-text h2{
+    margin:0;
+    color:var(--primary-color);
+    font-size:1.6em;
+    text-transform:uppercase;
+}
 
-        .section-title{
-            background:var(--primary-color);
-            color:white;
-            padding:10px 15px;
-            font-size:0.95em;
-            margin-top:25px;
-            border-radius:4px;
-            text-transform:uppercase;
-            font-weight:bold;
-        }
+.header-text p{
+    margin:3px 0;
+    font-weight:bold;
+}
 
-        .form-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-            gap:15px;
-            padding:15px 0;
-            align-items:flex-end;
-        }
+.section-title{
+    background:var(--primary-color);
+    color:white;
+    padding:10px 15px;
+    font-size:0.95em;
+    margin-top:25px;
+    border-radius:4px;
+    text-transform:uppercase;
+    font-weight:bold;
+}
 
-        .span-2{
-            grid-column:span 2;
-        }
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+    padding:15px 0;
+    align-items:flex-end;
+}
 
-        label{
-            font-weight:bold;
-            font-size:0.85em;
-            color:#444;
-            display:block;
-            margin-bottom:5px;
-        }
+.span-2{
+    grid-column:span 2;
+}
 
-        input,
-        select,
-        textarea{
-            width:100%;
-            padding:10px;
-            border:1px solid #ccc;
-            border-radius:4px;
-            font-size:0.9em;
-            box-sizing:border-box;
-            transition:border 0.3s;
-        }
+label{
+    font-weight:bold;
+    font-size:0.85em;
+    display:block;
+    margin-bottom:5px;
+}
 
-        input:focus{
-            border-color:var(--primary-color);
-            outline:none;
-            background:#f0fdfa;
-        }
+input,
+select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:0.9em;
+    box-sizing:border-box;
+}
 
-        .btn-add{
-            background-color:#2e7d32;
-            color:white;
-            height:40px;
-            width:100%;
-            margin-bottom:2px;
-        }
+input:focus{
+    border-color:var(--primary-color);
+    outline:none;
+    background:#f0fdfa;
+}
 
-        .btn-preview{
-            background-color:#1976d2;
-            color:white;
-            margin:20px 0;
-            padding:12px 20px;
-        }
+button{
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:all 0.2s;
+}
 
-        .btn-pdf{
-            background-color:var(--accent-color);
-            color:white;
-            flex:1;
-            padding:14px;
-            font-size:1em;
-        }
+button:hover{
+    opacity:0.9;
+    transform:translateY(-1px);
+}
 
-        .btn-edit{
-            background:#1565c0;
-            color:white;
-            padding:6px 10px;
-            font-size:0.8em;
-        }
+.btn-add{
+    background-color:#2e7d32;
+    color:white;
+    height:42px;
+    width:100%;
+}
 
-        .btn-delete{
-            background:#c62828;
-            color:white;
-            padding:6px 10px;
-            font-size:0.8em;
-        }
+.btn-preview{
+    background-color:#1976d2;
+    color:white;
+    margin:20px 0;
+    padding:12px 20px;
+}
 
-        .main-actions{
-            margin-top:30px;
-            display:flex;
-            gap:15px;
-            border-top:2px solid #eee;
-            padding-top:25px;
-        }
+.btn-pdf{
+    background-color:var(--accent-color);
+    color:white;
+    width:100%;
+    padding:16px;
+    font-size:1em;
+}
 
-        button{
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-            font-weight:bold;
-            transition:all 0.2s;
-        }
+.btn-edit{
+    background:#1565c0;
+    color:white;
+    padding:6px 10px;
+    font-size:0.8em;
+}
 
-        button:hover{
-            opacity:0.9;
-            transform:translateY(-1px);
-            box-shadow:0 4px 8px rgba(0,0,0,0.1);
-        }
+.btn-delete{
+    background:#c62828;
+    color:white;
+    padding:6px 10px;
+    font-size:0.8em;
+}
 
-        #previewContainer{
-            display:none;
-            margin-top:20px;
-            animation:fadeIn 0.3s;
-        }
+.main-actions{
+    margin-top:30px;
+    border-top:2px solid #eee;
+    padding-top:25px;
+}
 
-        .table-container{
-            overflow-x:auto;
-            border-radius:8px;
-            border:1px solid #ddd;
-        }
+#previewContainer{
+    display:none;
+    margin-top:20px;
+}
 
-        table{
-            width:100%;
-            border-collapse:collapse;
-            font-size:0.85em;
-            background:white;
-        }
+.table-container{
+    overflow-x:auto;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
 
-        th{
-            background-color:#e0f2f1;
-            color:var(--primary-color);
-            padding:12px;
-            text-align:left;
-            border-bottom:2px solid var(--primary-color);
-        }
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.85em;
+    background:white;
+}
 
-        td{
-            padding:10px;
-            border-bottom:1px solid #eee;
-            vertical-align:top;
-        }
+th{
+    background-color:#e0f2f1;
+    color:var(--primary-color);
+    padding:12px;
+    text-align:left;
+    border-bottom:2px solid var(--primary-color);
+}
 
-        .sci-name{
-            font-style:italic;
-            font-weight:bold;
-        }
+td{
+    padding:10px;
+    border-bottom:1px solid #eee;
+    vertical-align:top;
+}
 
-        .footer-note{
-            margin-top:35px;
-            padding:20px;
-            background:#fffde7;
-            border-left:5px solid #fbc02d;
-            font-size:0.95em;
-            line-height:1.6;
-            border-radius:0 4px 4px 0;
-        }
+.sci-name{
+    font-style:italic;
+    font-weight:bold;
+}
 
-        @keyframes fadeIn{
-            from{opacity:0;}
-            to{opacity:1;}
-        }
+.action-cell{
+    white-space:nowrap;
+    width:1%;
+}
 
-    </style>
+.footer-note{
+    margin-top:35px;
+    padding:20px;
+    background:#fffde7;
+    border-left:5px solid #fbc02d;
+    font-size:0.95em;
+    line-height:1.6;
+}
+
+</style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <div class="header">
+<div class="header">
 
-        <img src="LOGO_SERPAT.png" alt="Logo SERPAT">
+    <img src="LOGO_SERPAT.png">
 
-        <div class="header-text">
-            <h2>Depósito de Colecciones Zoológicas</h2>
-            <p>Área Zoología de Invertebrados</p>
-            <p class="sub-p">Museo Nacional de Historia Natural de Chile</p>
-        </div>
-
-        <img src="LOGO_MNHN.png" alt="Logo MNHN">
-
+    <div class="header-text">
+        <h2>Depósito de Colecciones Zoológicas</h2>
+        <p>Área Zoología de Invertebrados</p>
+        <p>Museo Nacional de Historia Natural de Chile</p>
     </div>
 
-    <div class="section-title">
-        1. Información del Legatario y Proyecto
+    <img src="LOGO_MNHN.png">
+
+</div>
+
+<div class="section-title">
+1. Información del Legatario y Proyecto
+</div>
+
+<div class="form-grid">
+
+    <div>
+        <label>Nombre del Legatario</label>
+        <input type="text" id="legatario">
     </div>
 
-    <div class="form-grid">
-
-        <div>
-            <label>Nombre del Legatario:</label>
-            <input type="text" id="legatario">
-        </div>
-
-        <div>
-            <label>Email de contacto:</label>
-            <input type="email" id="email">
-        </div>
-
-        <div>
-            <label>Fono / Teléfono:</label>
-            <input type="text" id="fono">
-        </div>
-
-        <div>
-            <label>Afiliación Institucional:</label>
-            <input type="text" id="afiliacion">
-        </div>
-
-        <div class="span-2">
-            <label>Proyecto / Publicación asociada:</label>
-            <input type="text" id="proyecto">
-        </div>
-
-        <div>
-            <label>Fecha de Entrega:</label>
-            <input type="date" id="fecha_entrega">
-        </div>
-
+    <div>
+        <label>Email</label>
+        <input type="email" id="email">
     </div>
 
-    <div class="section-title">
-        2. Detalle del Material
+    <div>
+        <label>Fono</label>
+        <input type="text" id="fono">
     </div>
 
-    <div class="form-grid">
-
-        <div>
-            <label>Especie (Género + sp.):</label>
-            <input type="text" id="especie" class="sci-name">
-        </div>
-
-        <div>
-            <label>Código de muestra:</label>
-            <input type="text" id="codigo_muestra">
-        </div>
-
-        <div>
-            <label>N° Individuos:</label>
-            <input type="number" id="n_individuos" value="1">
-        </div>
-
-        <div>
-            <label>Determinador:</label>
-            <input type="text" id="determinador">
-        </div>
-
-        <div>
-            <label>Fecha Det.:</label>
-            <input type="date" id="fecha_det">
-        </div>
-
-        <div>
-            <label>Colector(es):</label>
-            <input type="text" id="colector">
-        </div>
-
-        <div>
-            <label>Fecha Recolección:</label>
-            <input type="date" id="fecha_recoleccion">
-        </div>
-
-        <div>
-            <label>Localidad:</label>
-            <input type="text" id="localidad">
-        </div>
-
-        <div>
-            <label>Coordenadas:</label>
-            <input type="text" id="coordenadas">
-        </div>
-
-        <div>
-            <label>Expedición:</label>
-            <input type="text" id="expedicion">
-        </div>
-
-        <div>
-            <label>Protocolo Muestreo:</label>
-            <input type="text" id="protocolo">
-        </div>
-
-        <div>
-
-            <label>Modo Conservación:</label>
-
-            <select id="conservacion">
-                <option value="Alcohol 70%">Alcohol 70%</option>
-                <option value="Alcohol 95% (Genético)">Alcohol 95% (Genético)</option>
-                <option value="Seco">Seco</option>
-                <option value="Montaje (Placa)">Montaje (Placa)</option>
-                <option value="Fijado en Formalina">Fijado en Formalina</option>
-            </select>
-
-        </div>
-
-        <div>
-            <label>N° Catálogo (Opcional):</label>
-            <input type="text" id="n_catalogo">
-        </div>
-
-        <div>
-            <button class="btn-add" onclick="agregarFila()">
-                + Añadir / Actualizar Ítem
-            </button>
-        </div>
-
+    <div>
+        <label>Afiliación Institucional</label>
+        <input type="text" id="afiliacion">
     </div>
 
-    <button class="btn-preview" onclick="togglePreview()">
-        Ver / Ocultar Previsualización
-    </button>
-
-    <div id="previewContainer">
-
-        <div class="table-container">
-
-            <table id="tablaMaterial">
-
-                <thead>
-
-                <tr>
-                    <th>Especie</th>
-                    <th>Cant.</th>
-                    <th>Cód. Muestra</th>
-                    <th>Localidad</th>
-                    <th>Colector</th>
-                    <th>Conservación</th>
-                    <th>Catálogo</th>
-                    <th>Editar</th>
-                    <th>Borrar</th>
-                </tr>
-
-                </thead>
-
-                <tbody></tbody>
-
-            </table>
-
-        </div>
-
+    <div class="span-2">
+        <label>Proyecto / Publicación</label>
+        <input type="text" id="proyecto">
     </div>
 
-    <div class="main-actions">
+    <div>
+        <label>Expedición</label>
+        <input type="text" id="expedicion_general">
+    </div>
 
-        <button class="btn-pdf" onclick="exportarPDF()">
-            Descarga formato PDF (envío)
+    <div class="span-2">
+        <label>Protocolo de Muestreo</label>
+        <input type="text" id="protocolo_general">
+    </div>
+
+    <div>
+        <label>Fecha de Entrega</label>
+        <input type="date" id="fecha_entrega">
+    </div>
+
+</div>
+
+<div class="section-title">
+2. Detalle del Material
+</div>
+
+<div class="form-grid">
+
+    <div>
+        <label>Especie</label>
+        <input type="text" id="especie" class="sci-name">
+    </div>
+
+    <div>
+        <label>Código de muestra</label>
+        <input type="text" id="codigo_muestra">
+    </div>
+
+    <div>
+        <label>N° Individuos</label>
+        <input type="number" id="n_individuos" value="1">
+    </div>
+
+    <div>
+        <label>Determinador</label>
+        <input type="text" id="determinador">
+    </div>
+
+    <div>
+        <label>Fecha Determinación</label>
+        <input type="date" id="fecha_det">
+    </div>
+
+    <div>
+        <label>Colector(es)</label>
+        <input type="text" id="colector">
+    </div>
+
+    <div>
+        <label>Fecha Recolección</label>
+        <input type="date" id="fecha_recoleccion">
+    </div>
+
+    <div>
+        <label>Localidad</label>
+        <input type="text" id="localidad">
+    </div>
+
+    <div>
+        <label>Coordenadas</label>
+        <input type="text" id="coordenadas">
+    </div>
+
+    <div>
+        <label>Modo Conservación</label>
+
+        <select id="conservacion">
+            <option value="Alcohol 70%">Alcohol 70%</option>
+            <option value="Alcohol 95%">Alcohol 95%</option>
+            <option value="Seco">Seco</option>
+            <option value="Formalina">Formalina</option>
+        </select>
+    </div>
+
+    <div>
+        <label>N° Catálogo</label>
+        <input type="text" id="n_catalogo">
+    </div>
+
+    <div>
+        <button class="btn-add" onclick="agregarFila()">
+            Añadir Ítem
         </button>
-
     </div>
 
-    <div class="footer-note">
+</div>
 
-        <strong>Instrucción:</strong>
+<button class="btn-preview" onclick="togglePreview()">
+Ver / Ocultar Previsualización
+</button>
 
-        Una vez finalizado y descargado el formulario con toda la información requerida,
-        firmar y enviar al curador/a correspondiente.
+<div id="previewContainer">
 
-        <br><br>
+<div class="table-container">
 
-        <em>
-            Los números de catálogo se entregarán una vez que el material haya sido
-            recepcionado y corroborado.
-        </em>
+<table id="tablaMaterial">
 
-    </div>
+<thead>
+
+<tr>
+    <th>Especie</th>
+    <th>Cant.</th>
+    <th>Cód.</th>
+    <th>Localidad</th>
+    <th>Colector</th>
+    <th>Conservación</th>
+    <th>Catálogo</th>
+    <th></th>
+</tr>
+
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="main-actions">
+
+<button class="btn-pdf" onclick="exportarPDF()">
+Descargar Formulario PDF
+</button>
+
+</div>
+
+<div class="footer-note">
+
+<strong>Instrucción:</strong>
+
+Una vez finalizado y descargado el formulario, firmar y enviar al curador/a correspondiente.
+
+</div>
 
 </div>
 
 <script>
 
-    let datosMaterial = [];
-    let editIndex = -1;
+let datosMaterial = [];
+let editIndex = -1;
 
-    function agregarFila(){
+function limpiarFormulario(){
 
-        const fields = [
-            'especie',
-            'codigo_muestra',
-            'n_individuos',
-            'determinador',
-            'fecha_det',
-            'colector',
-            'fecha_recoleccion',
-            'localidad',
-            'coordenadas',
-            'expedicion',
-            'protocolo',
-            'conservacion',
-            'n_catalogo'
-        ];
+    const ids = [
+        'especie',
+        'codigo_muestra',
+        'n_individuos',
+        'determinador',
+        'fecha_det',
+        'colector',
+        'fecha_recoleccion',
+        'localidad',
+        'coordenadas',
+        'conservacion',
+        'n_catalogo'
+    ];
 
-        const item = {};
+    ids.forEach(id=>{
 
-        fields.forEach(f=>{
-            item[f] = document.getElementById(f).value;
-        });
+        const field = document.getElementById(id);
 
-        if(!item.especie || !item.localidad){
-
-            alert("Los campos 'Especie' y 'Localidad' son obligatorios.");
-
-            return;
-        }
-
-        if(editIndex >= 0){
-
-            datosMaterial[editIndex] = item;
-            editIndex = -1;
-
+        if(field.tagName === 'SELECT'){
+            field.selectedIndex = 0;
         }else{
-
-            datosMaterial.push(item);
+            field.value = '';
         }
+    });
 
-        actualizarTabla();
+    document.getElementById('n_individuos').value = 1;
+}
 
-        fields.forEach(f=>{
+function agregarFila(){
 
-            const field = document.getElementById(f);
+    const item = {
 
-            if(field.type !== 'select-one'){
-                field.value = '';
-            }
-        });
+        especie:document.getElementById('especie').value,
+        codigo_muestra:document.getElementById('codigo_muestra').value,
+        n_individuos:document.getElementById('n_individuos').value,
+        determinador:document.getElementById('determinador').value,
+        fecha_det:document.getElementById('fecha_det').value,
+        colector:document.getElementById('colector').value,
+        fecha_recoleccion:document.getElementById('fecha_recoleccion').value,
+        localidad:document.getElementById('localidad').value,
+        coordenadas:document.getElementById('coordenadas').value,
+        conservacion:document.getElementById('conservacion').value,
+        n_catalogo:document.getElementById('n_catalogo').value
+    };
 
-        document.getElementById('n_individuos').value = 1;
+    if(!item.especie || !item.localidad){
 
-        document.getElementById('previewContainer').style.display = 'block';
+        alert("Especie y Localidad son obligatorios.");
+        return;
     }
 
-    function actualizarTabla(){
+    if(editIndex >= 0){
 
-        const tbody = document.querySelector('#tablaMaterial tbody');
+        datosMaterial[editIndex] = item;
+        editIndex = -1;
 
-        tbody.innerHTML = "";
+    }else{
 
-        datosMaterial.forEach((i,index)=>{
-
-            tbody.innerHTML += `
-            <tr>
-
-                <td class="sci-name">${i.especie}</td>
-
-                <td>${i.n_individuos}</td>
-
-                <td>${i.codigo_muestra}</td>
-
-                <td>${i.localidad}</td>
-
-                <td>${i.colector}</td>
-
-                <td>${i.conservacion}</td>
-
-                <td>${i.n_catalogo || '---'}</td>
-
-                <td>
-                    <button class="btn-edit" onclick="editarRegistro(${index})">
-                        Editar
-                    </button>
-                </td>
-
-                <td>
-                    <button class="btn-delete" onclick="eliminarRegistro(${index})">
-                        Borrar
-                    </button>
-                </td>
-
-            </tr>
-            `;
-        });
+        datosMaterial.push(item);
     }
 
-    function editarRegistro(index){
+    actualizarTabla();
 
-        const item = datosMaterial[index];
+    limpiarFormulario();
 
-        Object.keys(item).forEach(key=>{
+    document.getElementById('previewContainer').style.display = 'block';
+}
 
-            const field = document.getElementById(key);
+function actualizarTabla(){
 
-            if(field){
-                field.value = item[key];
-            }
-        });
+    const tbody = document.querySelector('#tablaMaterial tbody');
 
-        editIndex = index;
+    tbody.innerHTML = "";
 
-        window.scrollTo({
-            top:0,
-            behavior:'smooth'
-        });
-    }
+    datosMaterial.forEach((i,index)=>{
 
-    function eliminarRegistro(index){
+        tbody.innerHTML += `
+        <tr>
 
-        if(!confirm("¿Eliminar este registro?")) return;
+            <td class="sci-name">${i.especie}</td>
+            <td>${i.n_individuos}</td>
+            <td>${i.codigo_muestra}</td>
+            <td>${i.localidad}</td>
+            <td>${i.colector}</td>
+            <td>${i.conservacion}</td>
+            <td>${i.n_catalogo || '---'}</td>
 
-        datosMaterial.splice(index,1);
+            <td class="action-cell">
 
-        actualizarTabla();
-    }
+                <button class="btn-edit" onclick="editarRegistro(${index})">
+                    Editar
+                </button>
 
-    function togglePreview(){
+                <button class="btn-delete" onclick="eliminarRegistro(${index})">
+                    Borrar
+                </button>
 
-        const container = document.getElementById('previewContainer');
+            </td>
 
-        container.style.display =
-            (container.style.display === 'none' || container.style.display === '')
-            ? 'block'
-            : 'none';
-    }
+        </tr>
+        `;
+    });
+}
 
-    async function exportarPDF(){
+function editarRegistro(index){
 
-        if(datosMaterial.length === 0){
+    const item = datosMaterial[index];
 
-            alert("No hay datos para exportar.");
+    Object.keys(item).forEach(key=>{
 
-            return;
+        const field = document.getElementById(key);
+
+        if(field){
+            field.value = item[key];
         }
+    });
 
-        const { jsPDF } = window.jspdf;
+    editIndex = index;
 
-        const doc = new jsPDF({
-            orientation:'landscape',
-            unit:'mm',
-            format:'a4'
-        });
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+}
 
-        const pageWidth = 297;
-        const usableWidth = 267;
+function eliminarRegistro(index){
 
-        const logoLeft = new Image();
-        logoLeft.src = 'LOGO_SERPAT.png';
+    if(!confirm("¿Eliminar este registro?")) return;
 
-        const logoRight = new Image();
-        logoRight.src = 'LOGO_MNHN.png';
+    datosMaterial.splice(index,1);
 
-        await new Promise(resolve=>{
-            logoRight.onload = resolve;
-        });
+    actualizarTabla();
+}
 
-        doc.addImage(logoLeft,'PNG',15,10,18,18);
-        doc.addImage(logoRight,'PNG',262,10,18,18);
+function togglePreview(){
 
-        doc.setFont("helvetica","bold");
+    const c = document.getElementById('previewContainer');
 
-        doc.setFontSize(13);
+    c.style.display =
+        (c.style.display === 'none' || c.style.display === '')
+        ? 'block'
+        : 'none';
+}
 
-        doc.text(
-            "Formulario de Ingreso de Especímenes",
-            148.5,
-            18,
-            {align:"center"}
-        );
+async function exportarPDF(){
 
-        doc.text(
-            "Área Zoología de Invertebrados",
-            148.5,
-            26,
-            {align:"center"}
-        );
+    if(datosMaterial.length === 0){
 
-        doc.setFontSize(8);
-
-        let y = 34;
-
-        doc.rect(15,y,190,8);
-        doc.rect(205,y,25,8);
-        doc.rect(230,y,52,8);
-
-        doc.text("Legatario:",18,y+5);
-        doc.text(document.getElementById('legatario').value || "",45,y+5);
-
-        doc.text("Fecha:",210,y+5);
-
-        doc.text(
-            new Date().toLocaleDateString(),
-            240,
-            y+5
-        );
-
-        y += 8;
-
-        doc.rect(15,y,190,8);
-        doc.rect(205,y,25,8);
-        doc.rect(230,y,52,8);
-
-        doc.text("Email:",18,y+5);
-
-        doc.text(
-            document.getElementById('email').value || "",
-            45,
-            y+5
-        );
-
-        doc.text("Fono:",210,y+5);
-
-        doc.text(
-            document.getElementById('fono').value || "",
-            240,
-            y+5
-        );
-
-        y += 8;
-
-        doc.rect(15,y,267,8);
-
-        doc.text("Afiliación Institucional:",18,y+5);
-
-        doc.text(
-            document.getElementById('afiliacion').value || "",
-            70,
-            y+5
-        );
-
-        y += 8;
-
-        doc.rect(15,y,170,8);
-        doc.rect(185,y,40,8);
-        doc.rect(225,y,57,8);
-
-        doc.text("Proyecto/Publicación:",18,y+5);
-
-        doc.text(
-            document.getElementById('proyecto').value || "",
-            65,
-            y+5
-        );
-
-        doc.text("Expedición:",190,y+5);
-
-        doc.text(
-            document.getElementById('expedicion').value || "",
-            228,
-            y+5
-        );
-
-        y += 8;
-
-        doc.rect(15,y,267,8);
-
-        doc.text("Protocolo de muestreo:",18,y+5);
-
-        doc.text(
-            document.getElementById('protocolo').value || "",
-            70,
-            y+5
-        );
-
-        y += 12;
-
-        const rows = datosMaterial.map((i,idx)=>[
-            idx + 1,
-            i.especie,
-            i.codigo_muestra,
-            i.determinador,
-            i.fecha_det,
-            i.n_individuos,
-            i.localidad,
-            i.coordenadas,
-            i.colector,
-            i.fecha_recoleccion,
-            i.conservacion,
-            i.n_catalogo
-        ]);
-
-        doc.autoTable({
-
-            startY:y,
-
-            margin:{
-                left:15,
-                right:15
-            },
-
-            tableWidth:usableWidth,
-
-            styles:{
-                fontSize:6.5,
-                cellPadding:1,
-                overflow:'linebreak',
-                valign:'middle',
-                lineWidth:0.1,
-                textColor:0
-            },
-
-            headStyles:{
-                fillColor:[240,240,240],
-                textColor:0,
-                halign:'center',
-                fontStyle:'bold'
-            },
-
-            columnStyles:{
-
-                0:{cellWidth:8,halign:'center'},
-                1:{cellWidth:34,fontStyle:'italic'},
-                2:{cellWidth:16},
-                3:{cellWidth:22},
-                4:{cellWidth:16},
-                5:{cellWidth:12,halign:'center'},
-                6:{cellWidth:25},
-                7:{cellWidth:25},
-                8:{cellWidth:24},
-                9:{cellWidth:20},
-                10:{cellWidth:17},
-                11:{cellWidth:16}
-            },
-
-            head:[[
-                "N°",
-                "Especie",
-                "Código\nmuestra",
-                "Determinador",
-                "Fecha\nDet.",
-                "N°\nInd.",
-                "Localidad",
-                "Coordenadas",
-                "Colector",
-                "Fecha\nRecolect.",
-                "Modo\nConserv.",
-                "N° Cat."
-            ]],
-
-            body:rows,
-
-            didDrawPage:function(data){
-
-                const pageCount = doc.internal.getNumberOfPages();
-
-                doc.setFontSize(8);
-
-                doc.text(
-                    `Página ${data.pageNumber} de ${pageCount}`,
-                    280,
-                    200,
-                    {align:'right'}
-                );
-            }
-        });
-
-        const finalY = doc.lastAutoTable.finalY + 18;
-
-        doc.setFontSize(8);
-
-        doc.text(
-            "Quien suscribe, ________________________________________, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile.",
-            18,
-            finalY,
-            {
-                maxWidth:255
-            }
-        );
-
-        const signY = finalY + 35;
-
-        doc.line(55,signY,105,signY);
-
-        doc.text(
-            "Firma del Legatario",
-            80,
-            signY + 5,
-            {align:'center'}
-        );
-
-        doc.line(195,signY,255,signY);
-
-        doc.text(
-            "Curador(a) / Encargado MNHN",
-            225,
-            signY + 5,
-            {align:'center'}
-        );
-
-        const leg =
-            document.getElementById('legatario').value || 'MNHN';
-
-        doc.save(`Deposito_MNHN_${leg}.pdf`);
+        alert("No hay registros.");
+        return;
     }
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF({
+        orientation:'landscape',
+        unit:'mm',
+        format:'a4'
+    });
+
+    const leftMargin = 15;
+    const rightMargin = 15;
+
+    const totalWidth = 267;
+
+    const logoLeft = new Image();
+    logoLeft.src = 'LOGO_SERPAT.png';
+
+    const logoRight = new Image();
+    logoRight.src = 'LOGO_MNHN.png';
+
+    await new Promise(resolve=>{
+        logoRight.onload = resolve;
+    });
+
+    doc.addImage(logoLeft,'PNG',15,10,18,18);
+    doc.addImage(logoRight,'PNG',262,10,18,18);
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(13);
+
+    doc.text(
+        "Formulario de Ingreso de Especímenes",
+        148.5,
+        18,
+        {align:"center"}
+    );
+
+    doc.text(
+        "Área Zoología de Invertebrados",
+        148.5,
+        26,
+        {align:"center"}
+    );
+
+    doc.setFontSize(8);
+
+    let y = 34;
+
+    doc.rect(15,y,180,8);
+    doc.rect(195,y,25,8);
+    doc.rect(220,y,62,8);
+
+    doc.text("Legatario:",18,y+5);
+    doc.text(document.getElementById('legatario').value || "",45,y+5);
+
+    doc.text("Fecha:",200,y+5);
+
+    doc.text(
+        new Date().toLocaleDateString(),
+        228,
+        y+5
+    );
+
+    y += 8;
+
+    doc.rect(15,y,180,8);
+    doc.rect(195,y,25,8);
+    doc.rect(220,y,62,8);
+
+    doc.text("Email:",18,y+5);
+    doc.text(document.getElementById('email').value || "",45,y+5);
+
+    doc.text("Fono:",200,y+5);
+    doc.text(document.getElementById('fono').value || "",228,y+5);
+
+    y += 8;
+
+    doc.rect(15,y,267,8);
+
+    doc.text("Afiliación Institucional:",18,y+5);
+
+    doc.text(
+        document.getElementById('afiliacion').value || "",
+        70,
+        y+5
+    );
+
+    y += 8;
+
+    doc.rect(15,y,170,8);
+    doc.rect(185,y,40,8);
+    doc.rect(225,y,57,8);
+
+    doc.text("Proyecto/Publicación:",18,y+5);
+
+    doc.text(
+        document.getElementById('proyecto').value || "",
+        65,
+        y+5
+    );
+
+    doc.text("Expedición:",190,y+5);
+
+    doc.text(
+        document.getElementById('expedicion_general').value || "",
+        228,
+        y+5
+    );
+
+    y += 8;
+
+    doc.rect(15,y,267,8);
+
+    doc.text("Protocolo de muestreo:",18,y+5);
+
+    doc.text(
+        document.getElementById('protocolo_general').value || "",
+        70,
+        y+5
+    );
+
+    y += 10;
+
+    const rows = datosMaterial.map((i,idx)=>[
+        idx + 1,
+        i.especie,
+        i.codigo_muestra,
+        i.determinador,
+        i.fecha_det,
+        i.n_individuos,
+        i.localidad,
+        i.coordenadas,
+        i.colector,
+        i.fecha_recoleccion,
+        i.conservacion,
+        i.n_catalogo
+    ]);
+
+    doc.autoTable({
+
+        startY:y,
+
+        margin:{
+            left:leftMargin,
+            right:rightMargin
+        },
+
+        tableWidth:totalWidth,
+
+        styles:{
+            fontSize:6,
+            cellPadding:0.8,
+            overflow:'linebreak',
+            valign:'middle',
+            lineWidth:0.1,
+            textColor:0
+        },
+
+        headStyles:{
+            fillColor:[255,255,255],
+            textColor:0,
+            halign:'center',
+            fontStyle:'bold',
+            lineColor:[0,0,0]
+        },
+
+        bodyStyles:{
+            lineColor:[0,0,0]
+        },
+
+        columnStyles:{
+
+            0:{cellWidth:8,halign:'center'},
+            1:{cellWidth:33},
+            2:{cellWidth:15},
+            3:{cellWidth:22},
+            4:{cellWidth:15},
+            5:{cellWidth:12},
+            6:{cellWidth:24},
+            7:{cellWidth:24},
+            8:{cellWidth:24},
+            9:{cellWidth:20},
+            10:{cellWidth:17},
+            11:{cellWidth:18}
+        },
+
+        head:[[
+            "N°",
+            "Especie",
+            "Código\nmuestra",
+            "Determinador",
+            "Fecha\nDet.",
+            "N°\nind.",
+            "Localidad",
+            "Coordenadas",
+            "Colector",
+            "Fecha\nrecolección",
+            "Modo\nconservación",
+            "N° Catálogo"
+        ]],
+
+        body:rows
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 15;
+
+    doc.setFontSize(8);
+
+    doc.text(
+        "Quien suscribe, ________________________________________, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile.",
+        18,
+        finalY,
+        {maxWidth:255}
+    );
+
+    const signY = finalY + 35;
+
+    doc.line(55,signY,105,signY);
+
+    doc.text(
+        "Firma del Legatario",
+        80,
+        signY + 5,
+        {align:'center'}
+    );
+
+    doc.line(195,signY,255,signY);
+
+    doc.text(
+        "Curador(a) / Encargado MNHN",
+        225,
+        signY + 5,
+        {align:'center'}
+    );
+
+    const leg =
+        document.getElementById('legatario').value || 'MNHN';
+
+    doc.save(`Deposito_MNHN_${leg}.pdf`);
+}
 
 </script>
 
