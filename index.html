@@ -247,6 +247,8 @@ td{
 
 <div class="form-grid">
 
+    <!-- FILA 1 -->
+
     <div>
         <label>Nombre del Legatario</label>
         <input type="text" id="legatario">
@@ -266,6 +268,8 @@ td{
         <label>Afiliación Institucional</label>
         <input type="text" id="afiliacion">
     </div>
+
+    <!-- FILA 2 -->
 
     <div class="span-2">
         <label>Proyecto / Publicación</label>
@@ -295,6 +299,8 @@ td{
 
 <div class="form-grid">
 
+    <!-- FILA 1 -->
+
     <div>
         <label>Especie</label>
         <input type="text" id="especie" class="sci-name">
@@ -319,6 +325,8 @@ td{
         <label>Fecha Determinación</label>
         <input type="date" id="fecha_det">
     </div>
+
+    <!-- FILA 2 -->
 
     <div>
         <label>Localidad</label>
@@ -355,6 +363,8 @@ td{
         <label>N° Catálogo</label>
         <input type="text" id="n_catalogo">
     </div>
+
+    <!-- FILA 3 -->
 
     <div class="span-2">
         <label>Observaciones</label>
@@ -405,7 +415,7 @@ Ver / Ocultar Previsualización
 <div class="main-actions">
 
 <button class="btn-pdf" onclick="exportarPDF()">
-Descargar Formulario PDF
+Descargar Formulario (PDF)
 </button>
 
 </div>
@@ -414,7 +424,7 @@ Descargar Formulario PDF
 
 <strong>Instrucción:</strong>
 
-Una vez finalizado y descargado el formulario, firmar y enviar al curador/a correspondiente.
+Una vez finalizado el ingreso de la información, descargar el formulario, firmar y enviar al curador/a encargado/a de la colección respectiva.
 
 </div>
 
@@ -585,7 +595,7 @@ function togglePreview(){
         : 'none';
 }
 
-/* EL RESTO DEL CÓDIGO PDF PERMANECE EXACTAMENTE IGUAL */
+/* RESTO DEL exportarPDF SIN CAMBIOS */
 
 </script>
 
