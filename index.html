@@ -12,10 +12,9 @@
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: var(--bg-color); }
         .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* Cabecera Web */
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 20px; }
         .logo-serpat { height: 85px; width: auto; }
-        .logo-mnhn { height: 100px; width: auto; } /* 15% más grande que serpat aprox */
+        .logo-mnhn { height: 100px; width: auto; }
         .header-text { text-align: center; }
         .header-text h2 { margin: 0; font-size: 1.4em; color: var(--primary-color); text-transform: uppercase; }
 
@@ -31,20 +30,21 @@
         #previewTable { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.8em; }
         #previewTable th, #previewTable td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         #previewTable th { background: #e0f2f1; color: var(--primary-color); }
-        .sci-name { font-style: italic; }
+        .btn-edit { background: #ffa000; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; margin-right: 5px; }
+        .btn-del { background: #d32f2f; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <img id="imgSerpat" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_serpat.png" class="logo-serpat" alt="SERPAT">
+        <img id="imgSerpat" crossorigin="anonymous" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_serpat.png" class="logo-serpat" alt="SERPAT">
         <div class="header-text">
             <h2>Formulario de Ingreso de Especímenes</h2>
             <p>Área Zoología de Invertebrados</p>
             <p style="font-size: 0.8em; color: #666;">Museo Nacional de Historia Natural de Chile</p>
         </div>
-        <img id="imgMnhn" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_mnhn.png" class="logo-mnhn" alt="MNHN">
+        <img id="imgMnhn" crossorigin="anonymous" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_mnhn.png" class="logo-mnhn" alt="MNHN">
     </div>
 
     <div class="section-title">1. Datos del Legatario y Proyecto</div>
@@ -62,7 +62,7 @@
     <div class="section-title">2. Detalle del Material</div>
     <div class="form-grid">
         <div><label>Especie (Género + sp.):</label><input type="text" id="especie"></div>
-        <div><label>Tipificación:</label><input type="text" id="tipificacion" placeholder="Ej: Holotipo, Paratipo"></div>
+        <div><label>Tipificación:</label><input type="text" id="tipificacion"></div>
         <div><label>Código Muestra:</label><input type="text" id="codigo_muestra"></div>
         <div><label>Determinador:</label><input type="text" id="determinador"></div>
         <div><label>Fecha Det.:</label><input type="date" id="fecha_det"></div>
@@ -87,11 +87,10 @@
         <thead>
             <tr>
                 <th>Especie</th>
-                <th>Tipificación</th>
                 <th>Cód. Muestra</th>
                 <th>Localidad</th>
                 <th>Cant.</th>
-                <th>Eliminar</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="listaCuerpo"></tbody>
@@ -121,108 +120,117 @@
         };
         
         if(!item.especie || !item.localidad) return alert("Especie y Localidad son obligatorios.");
-        
         items.push(item);
         renderTabla();
+        limpiarCamposItem();
+    }
+
+    function editarItem(index) {
+        const it = items[index];
+        document.getElementById('especie').value = it.especie;
+        document.getElementById('tipificacion').value = it.tipificacion;
+        document.getElementById('codigo_muestra').value = it.codigo;
+        document.getElementById('determinador').value = it.determinador;
+        document.getElementById('fecha_det').value = it.fecha_det;
+        document.getElementById('n_individuos').value = it.n;
+        document.getElementById('localidad').value = it.localidad;
+        document.getElementById('coordenadas').value = it.coords;
+        document.getElementById('colector').value = it.colector;
+        document.getElementById('fecha_recoleccion').value = it.fecha_rec;
+        document.getElementById('conservacion').value = it.modo;
         
-        // Limpiar campos de ítem
-        ['especie', 'tipificacion', 'codigo_muestra'].forEach(id => document.getElementById(id).value = "");
+        items.splice(index, 1);
+        renderTabla();
+        window.scrollTo(0, 500); // Mueve el foco arriba para editar
+    }
+
+    function limpiarCamposItem() {
+        const ids = ['especie', 'tipificacion', 'codigo_muestra', 'determinador', 'fecha_det', 'localidad', 'coordenadas', 'colector', 'fecha_recoleccion'];
+        ids.forEach(id => document.getElementById(id).value = "");
+        document.getElementById('n_individuos').value = "1";
     }
 
     function renderTabla() {
         const tbody = document.getElementById('listaCuerpo');
         tbody.innerHTML = items.map((it, index) => `
             <tr>
-                <td class="sci-name">${it.especie}</td>
-                <td>${it.tipificacion}</td>
+                <td style="font-style:italic"><b>${it.especie}</b></td>
                 <td>${it.codigo}</td>
                 <td>${it.localidad}</td>
                 <td>${it.n}</td>
-                <td><button onclick="items.splice(${index},1);renderTabla()">×</button></td>
+                <td>
+                    <button class="btn-edit" onclick="editarItem(${index})">Editar</button>
+                    <button class="btn-del" onclick="items.splice(${index},1);renderTabla()">×</button>
+                </td>
             </tr>
         `).join('');
     }
 
-    async function exportarPDF() {
-        if(items.length === 0) return alert("No hay datos para generar el PDF.");
+    function exportarPDF() {
+        if(items.length === 0) return alert("No hay datos en la lista.");
         
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
         const margin = 10;
         const pageWidth = 297;
 
-        // --- MANEJO DE LOGOS ---
-        const logoSerpat = document.getElementById('imgSerpat');
-        const logoMnhn = document.getElementById('imgMnhn');
+        try {
+            const logoSerpat = document.getElementById('imgSerpat');
+            const logoMnhn = document.getElementById('imgMnhn');
 
-        // Logo Izquierdo (Serpat)
-        doc.addImage(logoSerpat, 'PNG', margin, 10, 35, 20);
-        
-        // Logo Derecho (MNHN) - Aumentado un 15% (aprox 40mm ancho)
-        doc.addImage(logoMnhn, 'PNG', pageWidth - margin - 40, 8, 40, 24);
+            // Dibujar logos
+            doc.addImage(logoSerpat, 'PNG', margin, 10, 35, 20);
+            doc.addImage(logoMnhn, 'PNG', pageWidth - margin - 42, 8, 42, 25);
 
-        // Títulos
-        doc.setFontSize(14); doc.setFont("helvetica", "bold");
-        doc.text("Formulario de Ingreso de Especímenes", pageWidth/2, 18, {align: 'center'});
-        doc.setFontSize(11);
-        doc.text("Área Zoología de Invertebrados", pageWidth/2, 24, {align: 'center'});
+            doc.setFontSize(14); doc.setFont("helvetica", "bold");
+            doc.text("Formulario de Ingreso de Especímenes", pageWidth/2, 18, {align: 'center'});
+            doc.setFontSize(11);
+            doc.text("Área Zoología de Invertebrados", pageWidth/2, 24, {align: 'center'});
 
-        // Tabla Datos Legatario
-        doc.autoTable({
-            startY: 35,
-            margin: {left: margin},
-            tableWidth: pageWidth - (margin*2),
-            theme: 'grid',
-            styles: {fontSize: 8, cellPadding: 1.5},
-            body: [
-                ['Legatario:', document.getElementById('legatario').value, 'Fecha:', document.getElementById('fecha_actual').value],
-                ['Email:', document.getElementById('email').value, 'Fono:', document.getElementById('fono').value],
-                ['Afiliación:', {content: document.getElementById('afiliacion').value, colSpan: 3}],
-                ['Proyecto:', document.getElementById('proyecto').value, 'Expedición:', document.getElementById('expedicion').value],
-                ['Protocolo:', {content: document.getElementById('protocolo').value, colSpan: 3}]
-            ],
-            columnStyles: {
-                0:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}, 
-                2:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}
-            }
-        });
+            doc.autoTable({
+                startY: 35,
+                margin: {left: margin},
+                tableWidth: pageWidth - (margin*2),
+                theme: 'grid',
+                styles: {fontSize: 8, cellPadding: 1.5},
+                body: [
+                    ['Legatario:', document.getElementById('legatario').value, 'Fecha:', document.getElementById('fecha_actual').value],
+                    ['Email:', document.getElementById('email').value, 'Fono:', document.getElementById('fono').value],
+                    ['Afiliación:', {content: document.getElementById('afiliacion').value, colSpan: 3}],
+                    ['Proyecto:', document.getElementById('proyecto').value, 'Expedición:', document.getElementById('expedicion').value],
+                    ['Protocolo:', {content: document.getElementById('protocolo').value, colSpan: 3}]
+                ],
+                columnStyles: {0:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}, 2:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}}
+            });
 
-        // Tabla Taxonómica Principal
-        doc.autoTable({
-            startY: doc.lastAutoTable.finalY + 5,
-            margin: {left: margin},
-            tableWidth: pageWidth - (margin*2),
-            head: [['N°', 'Especie', 'Tipific.', 'Cód. Muestra', 'Determinador', 'Fecha Det', 'N°', 'Localidad', 'Coords', 'Colector', 'Fecha Rec', 'Modo', 'Catálogo']],
-            body: items.map((it, idx) => [idx+1, it.especie, it.tipificacion, it.codigo, it.determinador, it.fecha_det, it.n, it.localidad, it.coords, it.colector, it.fecha_rec, it.modo, ""]),
-            styles: {fontSize: 6.5, overflow: 'linebreak', cellPadding: 0.8},
-            headStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold', halign: 'center'},
-            columnStyles: {
-                1: {fontStyle: 'italic', cellWidth: 32}, // Especie
-                7: {cellWidth: 38}  // Localidad
-            }
-        });
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                margin: {left: margin},
+                tableWidth: pageWidth - (margin*2),
+                head: [['N°', 'Especie', 'Tipific.', 'Cód. Muestra', 'Determinador', 'Fecha Det', 'N°', 'Localidad', 'Coords', 'Colector', 'Fecha Rec', 'Modo', 'Catálogo']],
+                body: items.map((it, idx) => [idx+1, it.especie, it.tipificacion, it.codigo, it.determinador, it.fecha_det, it.n, it.localidad, it.coords, it.colector, it.fecha_rec, it.modo, ""]),
+                styles: {fontSize: 6.5, overflow: 'linebreak', cellPadding: 0.8},
+                headStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold', halign: 'center'},
+                columnStyles: {1: {fontStyle: 'italic', cellWidth: 32}, 7: {cellWidth: 38}}
+            });
 
-        // Declaración de Donación
-        const finalY = doc.lastAutoTable.finalY + 12;
-        doc.setFontSize(8); doc.setFont("helvetica", "normal");
-        const nombreLegatario = document.getElementById('legatario').value || '..........................................................';
-        const declaracion = `Quien suscribe, ${nombreLegatario}, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile, para su depósito permanente en las colecciones biológicas allí resguardadas. Además, señala que no existe por parte del MNHNCL ninguna obligación de carácter monetario, ni de exhibición de los especímenes, solo el compromiso de resguardarlos adecuadamente.`;
-        const splitText = doc.splitTextToSize(declaracion, pageWidth - 30);
-        doc.text(splitText, 15, finalY);
+            const finalY = doc.lastAutoTable.finalY + 12;
+            doc.setFontSize(8); doc.setFont("helvetica", "normal");
+            const nombreLegatario = document.getElementById('legatario').value || '..........................................................';
+            const declaracion = `Quien suscribe, ${nombreLegatario}, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile, para su depósito permanente en las colecciones biológicas allí resguardadas.`;
+            doc.text(doc.splitTextToSize(declaracion, pageWidth - 30), 15, finalY);
 
-        // Firmas Simétricas
-        const firmaY = finalY + 30;
-        doc.line(40, firmaY, 110, firmaY);
-        doc.text("Firma del Legatario", 75, firmaY + 5, {align: 'center'});
+            const firmaY = finalY + 30;
+            doc.line(40, firmaY, 110, firmaY);
+            doc.text("Firma del Legatario", 75, firmaY + 5, {align: 'center'});
+            doc.line(180, firmaY, 250, firmaY);
+            doc.text("Andrea Martínez Salinas - Jefa Área Zoología", 215, firmaY + 5, {align: 'center'});
 
-        doc.line(180, firmaY, 250, firmaY);
-        doc.setFont("helvetica", "bold");
-        doc.text("Andrea Martínez Salinas", 215, firmaY + 5, {align: 'center'});
-        doc.setFontSize(7);
-        doc.setFont("helvetica", "normal");
-        doc.text("Jefa Área Zoología de Invertebrados MNHNCL", 215, firmaY + 9, {align: 'center'});
-
-        doc.save(`MNHNCL_Formulario_${nombreLegatario.replace(/\s+/g, '_')}.pdf`);
+            doc.save(`MNHNCL_Formulario_${nombreLegatario.replace(/\s+/g, '_')}.pdf`);
+        } catch (e) {
+            console.error(e);
+            alert("Error al generar el PDF. Verifica que los logos se carguen correctamente.");
+        }
     }
 </script>
 </body>
