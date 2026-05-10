@@ -612,265 +612,152 @@ async function exportarPDF(){
         {align:"center"}
     );
 
-    doc.setFontSize(8);
+    let y = 34;
 
-let y = 34;
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.15);
 
-doc.setDrawColor(0);
-doc.setLineWidth(0.15);
+    const rowH = 7;
 
-const rowH = 7;
+    doc.setFontSize(7.2);
 
-doc.setFontSize(7.2);
+    /* FILA 1 */
 
-/* =========================
-   FILA 1
-========================= */
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.rect(15,y,26,rowH);
+    doc.rect(41,y,154,rowH);
+    doc.rect(195,y,25,rowH);
+    doc.rect(220,y,62,rowH);
 
-doc.rect(15,y,26,rowH);
-doc.rect(41,y,154,rowH);
-doc.rect(195,y,25,rowH);
-doc.rect(220,y,62,rowH);
+    doc.text("Legatario",18,y+4.5);
 
-doc.text("Legatario",18,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('legatario').value || "",
+        44,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('legatario').value || "",
-    44,
-    y+4.5
-);
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.text("Fecha",202,y+4.5);
 
-doc.text("Fecha",202,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        new Date().toLocaleDateString(),
+        228,
+        y+4.5
+    );
 
-doc.text(
-    new Date().toLocaleDateString(),
-    228,
-    y+4.5
-);
+    /* FILA 2 */
 
-/* =========================
-   FILA 2
-========================= */
+    y += rowH;
 
-y += rowH;
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.rect(15,y,26,rowH);
+    doc.rect(41,y,154,rowH);
+    doc.rect(195,y,25,rowH);
+    doc.rect(220,y,62,rowH);
 
-doc.rect(15,y,26,rowH);
-doc.rect(41,y,154,rowH);
-doc.rect(195,y,25,rowH);
-doc.rect(220,y,62,rowH);
+    doc.text("Email",18,y+4.5);
 
-doc.text("Email",18,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('email').value || "",
+        44,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('email').value || "",
-    44,
-    y+4.5
-);
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.text("Fono",202,y+4.5);
 
-doc.text("Fono",202,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('fono').value || "",
+        228,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('fono').value || "",
-    228,
-    y+4.5
-);
+    /* FILA 3 */
 
-/* =========================
-   FILA 3
-========================= */
+    y += rowH;
 
-y += rowH;
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.rect(15,y,45,rowH);
+    doc.rect(60,y,222,rowH);
 
-doc.rect(15,y,45,rowH);
-doc.rect(60,y,222,rowH);
+    doc.text("Afiliación Institucional",18,y+4.5);
 
-doc.text("Afiliación Institucional",18,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('afiliacion').value || "",
+        63,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('afiliacion').value || "",
-    63,
-    y+4.5
-);
+    /* FILA 4 */
 
-/* =========================
-   FILA 4
-========================= */
+    y += rowH;
 
-y += rowH;
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.rect(15,y,45,rowH);
+    doc.rect(60,y,125,rowH);
 
-doc.rect(15,y,45,rowH);
-doc.rect(60,y,125,rowH);
+    doc.rect(185,y,40,rowH);
+    doc.rect(225,y,57,rowH);
 
-doc.rect(185,y,40,rowH);
-doc.rect(225,y,57,rowH);
+    doc.text("Proyecto/Publicación",18,y+4.5);
 
-doc.text("Proyecto/Publicación",18,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('proyecto').value || "",
+        63,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('proyecto').value || "",
-    63,
-    y+4.5
-);
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.text("Expedición",190,y+4.5);
 
-doc.text("Expedición",190,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('expedicion_general').value || "",
+        228,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('expedicion_general').value || "",
-    228,
-    y+4.5
-);
+    /* FILA 5 */
 
-/* =========================
-   FILA 5
-========================= */
+    y += rowH;
 
-y += rowH;
+    doc.setFont("helvetica","bold");
 
-doc.setFont("helvetica","bold");
+    doc.rect(15,y,45,rowH);
+    doc.rect(60,y,222,rowH);
 
-doc.rect(15,y,45,rowH);
-doc.rect(60,y,222,rowH);
+    doc.text("Protocolo de muestreo",18,y+4.5);
 
-doc.text("Protocolo de muestreo",18,y+4.5);
+    doc.setFont("helvetica","normal");
 
-doc.setFont("helvetica","normal");
+    doc.text(
+        document.getElementById('protocolo_general').value || "",
+        63,
+        y+4.5
+    );
 
-doc.text(
-    document.getElementById('protocolo_general').value || "",
-    63,
-    y+4.5
-);
-
-y += 10;
-
-doc.setFont("helvetica","bold");
-
-doc.rect(15,y,28,10);
-doc.rect(43,y,152,10);
-doc.rect(195,y,25,10);
-doc.rect(220,y,62,10);
-
-doc.text("Email",18,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('email').value || "",
-    46,
-    y+6
-);
-
-doc.setFont("helvetica","bold");
-doc.text("Fono",202,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('fono').value || "",
-    228,
-    y+6
-);
-
-/* =========================
-   FILA 3
-========================= */
-
-y += 10;
-
-doc.setFont("helvetica","bold");
-
-doc.rect(15,y,52,10);
-doc.rect(67,y,215,10);
-
-doc.text("Afiliación Institucional",18,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('afiliacion').value || "",
-    70,
-    y+6
-);
-
-/* =========================
-   FILA 4
-========================= */
-
-y += 10;
-
-doc.setFont("helvetica","bold");
-
-doc.rect(15,y,52,10);
-doc.rect(67,y,118,10);
-
-doc.rect(185,y,40,10);
-doc.rect(225,y,57,10);
-
-doc.text("Proyecto/Publicación",18,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('proyecto').value || "",
-    70,
-    y+6
-);
-
-doc.setFont("helvetica","bold");
-doc.text("Expedición",190,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('expedicion_general').value || "",
-    228,
-    y+6
-);
-
-/* =========================
-   FILA 5
-========================= */
-
-y += 10;
-
-doc.setFont("helvetica","bold");
-
-doc.rect(15,y,52,10);
-doc.rect(67,y,215,10);
-
-doc.text("Protocolo de muestreo",18,y+6);
-
-doc.setFont("helvetica","normal");
-doc.text(
-    document.getElementById('protocolo_general').value || "",
-    70,
-    y+6
-);
-
-y += 14;
+    y += 10;
 
     const rows = datosMaterial.map((i,idx)=>[
         idx + 1,
@@ -921,18 +808,18 @@ y += 14;
 
         columnStyles:{
 
-             0:{cellWidth:8,halign:'center'},   // N°
-    1:{cellWidth:37},                  // Especie
-    2:{cellWidth:17},                  // Código
-    3:{cellWidth:26},                  // Determinador
-    4:{cellWidth:16},                  // Fecha det.
-    5:{cellWidth:13},                  // N° ind.
-    6:{cellWidth:28},                  // Localidad
-    7:{cellWidth:29},                  // Coordenadas
-    8:{cellWidth:26},                  // Colector
-    9:{cellWidth:24},                  // Fecha recolect.
-    10:{cellWidth:20},                 // Conservación
-    11:{cellWidth:23}                  // Catálogo
+            0:{cellWidth:8,halign:'center'},
+            1:{cellWidth:37},
+            2:{cellWidth:17},
+            3:{cellWidth:26},
+            4:{cellWidth:16},
+            5:{cellWidth:13},
+            6:{cellWidth:28},
+            7:{cellWidth:29},
+            8:{cellWidth:26},
+            9:{cellWidth:24},
+            10:{cellWidth:20},
+            11:{cellWidth:23}
         },
 
         head:[[
