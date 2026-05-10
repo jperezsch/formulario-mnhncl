@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Depósito de Colecciones Zoológicas - MNHNCL</title>
+    <!-- Librerías Externas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -15,7 +16,7 @@
         
         /* Cabecera Institucional */
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary-color); padding-bottom: 20px; margin-bottom: 25px; }
-        .header img { height: 105px; width: auto; object-fit: contain; }
+        .header img { height: 90px; width: auto; object-fit: contain; }
         .header-text { text-align: center; flex-grow: 1; }
         .header-text h2 { margin: 0; color: var(--primary-color); font-size: 1.6em; text-transform: uppercase; letter-spacing: 1px; }
         .header-text p { margin: 3px 0; font-weight: bold; color: #444; font-size: 1.1em; }
@@ -32,14 +33,14 @@
         input:focus { border-color: var(--primary-color); outline: none; background: #f0fdfa; }
 
         /* Botones */
-        .btn-add { background-color: #2e7d32; color: white; height: 40px; width: 100%; margin-bottom: 2px; }
-        .btn-preview { background-color: #1976d2; color: white; margin: 20px 0; }
+        .btn-add { background-color: #2e7d32; color: white; height: 40px; width: 100%; }
+        .btn-preview { background-color: #1976d2; color: white; margin: 20px 0; width: 100%; }
         .btn-excel { background-color: #1b5e20; color: white; flex: 1; }
         .btn-pdf { background-color: var(--accent-color); color: white; flex: 1; }
         
         .main-actions { margin-top: 30px; display: flex; gap: 15px; border-top: 2px solid #eee; padding-top: 25px; }
         
-        button { border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        button { border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
         button:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
         /* Tabla de Vista Previa */
@@ -59,18 +60,18 @@
 
 <div class="container">
     <div class="header">
-        <img src="LOGO_SERPAT.png" alt="Logo SERPAT">
+        <img src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_serpat.png" alt="Logo SERPAT" onerror="this.src='https://via.placeholder.com/100?text=SERPAT'">
         <div class="header-text">
             <h2>Depósito de Colecciones Zoológicas</h2>
             <p>Área Zoología de Invertebrados</p>
             <p class="sub-p">Museo Nacional de Historia Natural de Chile</p>
         </div>
-        <img src="LOGO_MNHN.png" alt="Logo MNHN">
+        <img src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/logo_mnhn.png" alt="Logo MNHN" onerror="this.src='https://via.placeholder.com/100?text=MNHN'">
     </div>
 
     <div class="section-title">1. Información del Legatario y Proyecto</div>
     <div class="form-grid">
-        <div><label>Nombre del Legatario:</label><input type="text" id="legatario"></div>
+        <div><label>Nombre del Legatario:</label><input type="text" id="legatario" placeholder="Ej: Juan Pérez"></div>
         <div><label>Email de contacto:</label><input type="email" id="email"></div>
         <div><label>Fono / Teléfono:</label><input type="text" id="fono"></div>
         <div><label>Afiliación Institucional:</label><input type="text" id="afiliacion"></div>
@@ -80,7 +81,7 @@
 
     <div class="section-title">2. Detalle del Material</div>
     <div class="form-grid">
-        <div><label>Especie (Género + sp.):</label><input type="text" id="especie" class="sci-name"></div>
+        <div><label>Especie (Género + sp.):</label><input type="text" id="especie" class="sci-name" placeholder="Ej: Orchestoidea tuberculata"></div>
         <div><label>Código de muestra:</label><input type="text" id="codigo_muestra"></div>
         <div><label>N° Individuos:</label><input type="number" id="n_individuos" value="1"></div>
         <div><label>Determinador:</label><input type="text" id="determinador"></div>
@@ -88,7 +89,7 @@
         <div><label>Colector(es):</label><input type="text" id="colector"></div>
         <div><label>Fecha Recolección:</label><input type="date" id="fecha_recoleccion"></div>
         <div><label>Localidad:</label><input type="text" id="localidad"></div>
-        <div><label>Coordenadas:</label><input type="text" id="coordenadas"></div>
+        <div><label>Coordenadas:</label><input type="text" id="coordenadas" placeholder="Lat, Lon"></div>
         <div><label>Expedición:</label><input type="text" id="expedicion"></div>
         <div><label>Protocolo Muestreo:</label><input type="text" id="protocolo"></div>
         <div>
@@ -127,13 +128,13 @@
     </div>
 
     <div class="main-actions">
-        <button class="btn-excel" onclick="exportarExcel()">Descarga formato Excel (edición)</button>
-        <button class="btn-pdf" onclick="exportarPDF()">Descarga formato PDF (envío)</button>
+        <button class="btn-excel" onclick="exportarExcel()">Descarga Formato Excel (Edición)</button>
+        <button class="btn-pdf" onclick="exportarPDF()">Descarga Formato PDF (Envío)</button>
     </div>
 
     <div class="footer-note">
         <strong>Instrucción:</strong> Una vez finalizado y descargado el formulario con toda la información requerida, firmar y enviar al curador/a correspondiente.<br>
-        <em>Los números de catálogos se entregarán una vez que el material haya sido recepcionado y corroborado.</em>
+        <em>Los números de catálogos se entregarán una vez que el material haya sido recepcionado y corroborado por el MNHNCL.</em>
     </div>
 </div>
 
@@ -151,17 +152,16 @@
         fields.forEach(f => item[f] = document.getElementById(f).value);
 
         if(!item.especie || !item.localidad) {
-            alert("Error: Los campos 'Especie' y 'Localidad' son obligatorios.");
+            alert("Error: Los campos 'Especie' y 'Localidad' son obligatorios para el registro.");
             return;
         }
 
         datosMaterial.push(item);
         actualizarTabla();
         
-        document.getElementById('especie').value = "";
-        document.getElementById('codigo_muestra').value = "";
+        // Limpiar campos específicos tras agregar
+        ['especie', 'codigo_muestra', 'n_catalogo'].forEach(id => document.getElementById(id).value = "");
         document.getElementById('n_individuos').value = "1";
-        document.getElementById('n_catalogo').value = "";
         
         document.getElementById('previewContainer').style.display = 'block';
     }
@@ -187,61 +187,114 @@
         });
     }
 
+    // --- MEJORA EXCEL: FORMATO PROFESIONAL ---
     function exportarExcel() {
-        if(datosMaterial.length === 0) return alert("No hay datos en la lista.");
-        const leg = document.getElementById('legatario').value;
-        const info = {
-            Legatario: leg,
-            Email: document.getElementById('email').value,
-            Afiliacion: document.getElementById('afiliacion').value,
-            Proyecto: document.getElementById('proyecto').value
-        };
-        const data = datosMaterial.map(i => ({ ...info, ...i }));
-        const ws = XLSX.utils.json_to_sheet(data);
+        if(datosMaterial.length === 0) return alert("No hay datos para exportar.");
+        
+        const leg = document.getElementById('legatario').value || "Ingreso";
+        
+        // Estructura de encabezado
+        const headerRow1 = ["MUSEO NACIONAL DE HISTORIA NATURAL - FORMULARIO DE DEPÓSITO DE ESPECÍMENES"];
+        const headerRow2 = ["Legatario:", leg, "", "Afiliación:", document.getElementById('afiliacion').value];
+        const headerRow3 = ["Proyecto:", document.getElementById('proyecto').value, "", "Fecha:", document.getElementById('fecha_entrega').value];
+        const emptyRow = [""];
+        
+        const tableHeaders = [
+            'Especie', 'Cant.', 'Cód. Muestra', 'Localidad', 'Coordenadas', 'Colector', 
+            'Fecha Rec.', 'Expedición', 'Protocolo', 'Determinador', 'Fecha Det.', 
+            'Modo Conservación', 'N° Catálogo'
+        ];
+        
+        const rows = datosMaterial.map(i => [
+            i.especie, i.n_individuos, i.codigo_muestra, i.localidad, i.coordenadas, 
+            i.colector, i.fecha_recoleccion, i.expedicion, i.protocolo, 
+            i.determinador, i.fecha_det, i.conservacion, i.n_catalogo
+        ]);
+
+        const worksheetData = [headerRow1, headerRow2, headerRow3, emptyRow, tableHeaders, ...rows];
+        const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+
+        // Configuración de anchos de columna
+        ws['!cols'] = [
+            { wch: 30 }, { wch: 7 }, { wch: 15 }, { wch: 40 }, { wch: 20 }, 
+            { wch: 20 }, { wch: 15 }, { wch: 20 }, { wch: 20 }, { wch: 20 }, 
+            { wch: 12 }, { wch: 18 }, { wch: 15 }
+        ];
+
+        // Combinar celdas del título principal
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 12 } }];
+
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Deposito_MNHN");
-        XLSX.writeFile(wb, `Deposito_Zoológico_${leg || 'MNHN'}.xlsx`);
+        XLSX.utils.book_append_sheet(wb, ws, "MNHN_Deposito");
+        XLSX.writeFile(wb, `Formulario_MNHN_${leg.replace(/\s+/g, '_')}.xlsx`);
     }
 
+    // --- MEJORA PDF: CONTROL DE DESBORDE Y SIMETRÍA ---
     function exportarPDF() {
-        if(datosMaterial.length === 0) return alert("No hay datos para el PDF.");
+        if(datosMaterial.length === 0) return alert("No hay datos para generar el PDF.");
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4');
-        const leg = document.getElementById('legatario').value;
+        const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+        const leg = document.getElementById('legatario').value || "S/N";
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 10;
+        const tableWidth = pageWidth - (margin * 2); // 277mm aprox.
 
+        // Título Central
         doc.setFontSize(14);
-        doc.text("DEPÓSITO DE COLECCIONES ZOOLÓGICAS", 148, 20, { align: "center" });
-        doc.setFontSize(11);
-        doc.text("Área Zoología de Invertebrados", 148, 27, { align: "center" });
+        doc.setTextColor(0, 77, 64);
+        doc.text("FORMULARIO DE DEPÓSITO DE COLECCIONES ZOOLOGÍCAS", pageWidth / 2, 15, { align: "center" });
         doc.setFontSize(10);
-        doc.text("Museo Nacional de Historia Natural de Chile", 148, 33, { align: "center" });
-        
-        doc.setFontSize(9);
-        doc.text(`Legatario: ${leg}`, 20, 42);
-        doc.text(`Proyecto: ${document.getElementById('proyecto').value}`, 20, 47);
-        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 275, 42, { align: "right" });
+        doc.text("Museo Nacional de Historia Natural de Chile - Área Zoología de Invertebrados", pageWidth / 2, 21, { align: "center" });
 
-        const rows = datosMaterial.map(i => [
-            i.especie, i.n_individuos, i.codigo_muestra, i.localidad, 
-            i.colector, i.fecha_recoleccion, i.conservacion, i.n_catalogo
-        ]);
-        
+        // Tabla de datos del legatario (Ancho fijo igual a la principal)
         doc.autoTable({
-            startY: 52,
-            head: [['Especie', 'Cant', 'Cód. Muestra', 'Localidad', 'Colector', 'Fecha Rec.', 'Modo', 'N° Cat']],
-            body: rows,
-            headStyles: { fillColor: [0, 77, 64] },
-            styles: { fontSize: 8 },
-            columnStyles: { 0: { fontStyle: 'italic' } }
+            startY: 28,
+            margin: { left: margin },
+            tableWidth: tableWidth,
+            body: [
+                [`Legatario: ${leg}`, `Afiliación: ${document.getElementById('afiliacion').value}`],
+                [`Email: ${document.getElementById('email').value}`, `Fono: ${document.getElementById('fono').value}`],
+                [`Proyecto: ${document.getElementById('proyecto').value}`, `Fecha Entrega: ${document.getElementById('fecha_entrega').value}`]
+            ],
+            theme: 'plain',
+            styles: { fontSize: 9, cellPadding: 1, textColor: [50, 50, 50] },
+            columnStyles: { 0: { cellWidth: tableWidth/2 }, 1: { cellWidth: tableWidth/2 } }
         });
 
-        const finalY = doc.previousAutoTable.finalY + 25;
-        doc.line(40, finalY, 100, finalY);
-        doc.text("Firma Legatario", 70, finalY + 5, { align: "center" });
-        doc.line(190, finalY, 250, finalY);
-        doc.text("Curador(a) / Encargado MNHN", 220, finalY + 5, { align: "center" });
+        // Tabla Principal Taxonómica
+        const headers = [['Especie', 'Cant', 'Cód. Muestra', 'Localidad', 'Coordenadas', 'Colector', 'Fecha Rec.', 'Expedición', 'Protocolo', 'Determinador', 'Fecha Det.', 'Modo', 'N° Cat']];
+        const rows = datosMaterial.map(i => [
+            i.especie, i.n_individuos, i.codigo_muestra, i.localidad, i.coordenadas, 
+            i.colector, i.fecha_recoleccion, i.expedicion, i.protocolo, 
+            i.determinador, i.fecha_det, i.conservacion, i.n_catalogo
+        ]);
 
-        doc.save(`Deposito_MNHN_${leg}.pdf`);
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 8,
+            margin: { left: margin },
+            tableWidth: tableWidth,
+            head: headers,
+            body: rows,
+            headStyles: { fillColor: [0, 77, 64], fontSize: 7, halign: 'center' },
+            styles: { fontSize: 7, overflow: 'linebreak', cellPadding: 1.5 },
+            columnStyles: {
+                0: { fontStyle: 'italic', cellWidth: 35 }, // Especie
+                3: { cellWidth: 40 }, // Localidad (Wrap text)
+                4: { cellWidth: 25 }  // Coordenadas
+            }
+        });
+
+        // Bloque de Firmas
+        const finalY = doc.lastAutoTable.finalY + 30;
+        doc.setDrawColor(150);
+        doc.line(margin + 20, finalY, margin + 90, finalY);
+        doc.setFontSize(8);
+        doc.text("Firma del Legatario", margin + 55, finalY + 5, { align: "center" });
+        
+        doc.line(pageWidth - margin - 90, finalY, pageWidth - margin - 20, finalY);
+        doc.text("Recepción Curaduría MNHNCL", pageWidth - margin - 55, finalY + 5, { align: "center" });
+
+        doc.save(`Formulario_MNHN_${leg.replace(/\s+/g, '_')}.pdf`);
     }
 </script>
 </body>
