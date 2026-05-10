@@ -3,220 +3,859 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Ingreso MNHNCL</title>
+    <title>Depósito de Colecciones Zoológicas - MNHNCL</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    
-    <style>
-        :root { --mnhn-teal: #004d40; --mnhn-red: #c62828; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .wrapper { max-width: 1000px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        
-        /* Cabecera */
-        .header-ui { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--mnhn-teal); padding-bottom: 20px; margin-bottom: 30px; }
-        .header-ui img { display: block; }
-        .title-area { text-align: center; flex: 1; }
-        .title-area h1 { margin: 0; font-size: 1.5rem; color: var(--mnhn-teal); }
-        
-        /* Formulario */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #666; text-transform: uppercase; }
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; }
-        input:focus { border-color: var(--mnhn-teal); outline: none; box-shadow: 0 0 0 2px rgba(0,77,64,0.1); }
 
-        /* Botones */
-        .btn { padding: 12px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        .btn-add { background: var(--mnhn-teal); color: white; width: 100%; margin-top: 10px; }
-        .btn-add:hover { background: #00332a; }
-        .btn-pdf { background: var(--mnhn-red); color: white; padding: 18px 40px; font-size: 1.1rem; }
-        .btn-pdf:hover { background: #a82323; transform: translateY(-2px); }
-        
-        /* Tabla */
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 0.85rem; }
-        th { background: #f8f9fa; border-bottom: 2px solid #dee2e6; padding: 12px; text-align: left; }
-        td { border-bottom: 1px solid #eee; padding: 12px; }
-        .actions { display: flex; gap: 8px; }
-        .edit-row { background: #ff9800; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; border: none; cursor: pointer; }
-        .del-row { background: #f44336; color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; border: none; cursor: pointer; }
+    <style>
+
+        :root{
+            --primary-color:#004d40;
+            --accent-color:#c62828;
+            --bg-color:#f4f7f6;
+        }
+
+        body{
+            font-family:'Segoe UI', Helvetica, Arial, sans-serif;
+            margin:0;
+            padding:20px;
+            background-color:var(--bg-color);
+            color:#333;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+            background:white;
+            padding:35px;
+            border-radius:8px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:3px solid var(--primary-color);
+            padding-bottom:20px;
+            margin-bottom:25px;
+        }
+
+        .header img{
+            height:105px;
+            width:auto;
+            object-fit:contain;
+        }
+
+        .header-text{
+            text-align:center;
+            flex-grow:1;
+        }
+
+        .header-text h2{
+            margin:0;
+            color:var(--primary-color);
+            font-size:1.6em;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+
+        .header-text p{
+            margin:3px 0;
+            font-weight:bold;
+            color:#444;
+            font-size:1.1em;
+        }
+
+        .header-text .sub-p{
+            font-weight:normal;
+            color:#666;
+            font-size:1em;
+        }
+
+        .section-title{
+            background:var(--primary-color);
+            color:white;
+            padding:10px 15px;
+            font-size:0.95em;
+            margin-top:25px;
+            border-radius:4px;
+            text-transform:uppercase;
+            font-weight:bold;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:15px;
+            padding:15px 0;
+            align-items:flex-end;
+        }
+
+        .span-2{
+            grid-column:span 2;
+        }
+
+        label{
+            font-weight:bold;
+            font-size:0.85em;
+            color:#444;
+            display:block;
+            margin-bottom:5px;
+        }
+
+        input,
+        select,
+        textarea{
+            width:100%;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:4px;
+            font-size:0.9em;
+            box-sizing:border-box;
+            transition:border 0.3s;
+        }
+
+        input:focus{
+            border-color:var(--primary-color);
+            outline:none;
+            background:#f0fdfa;
+        }
+
+        .btn-add{
+            background-color:#2e7d32;
+            color:white;
+            height:40px;
+            width:100%;
+            margin-bottom:2px;
+        }
+
+        .btn-preview{
+            background-color:#1976d2;
+            color:white;
+            margin:20px 0;
+            padding:12px 20px;
+        }
+
+        .btn-pdf{
+            background-color:var(--accent-color);
+            color:white;
+            flex:1;
+            padding:14px;
+            font-size:1em;
+        }
+
+        .btn-edit{
+            background:#1565c0;
+            color:white;
+            padding:6px 10px;
+            font-size:0.8em;
+        }
+
+        .btn-delete{
+            background:#c62828;
+            color:white;
+            padding:6px 10px;
+            font-size:0.8em;
+        }
+
+        .main-actions{
+            margin-top:30px;
+            display:flex;
+            gap:15px;
+            border-top:2px solid #eee;
+            padding-top:25px;
+        }
+
+        button{
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            font-weight:bold;
+            transition:all 0.2s;
+        }
+
+        button:hover{
+            opacity:0.9;
+            transform:translateY(-1px);
+            box-shadow:0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        #previewContainer{
+            display:none;
+            margin-top:20px;
+            animation:fadeIn 0.3s;
+        }
+
+        .table-container{
+            overflow-x:auto;
+            border-radius:8px;
+            border:1px solid #ddd;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            font-size:0.85em;
+            background:white;
+        }
+
+        th{
+            background-color:#e0f2f1;
+            color:var(--primary-color);
+            padding:12px;
+            text-align:left;
+            border-bottom:2px solid var(--primary-color);
+        }
+
+        td{
+            padding:10px;
+            border-bottom:1px solid #eee;
+            vertical-align:top;
+        }
+
+        .sci-name{
+            font-style:italic;
+            font-weight:bold;
+        }
+
+        .footer-note{
+            margin-top:35px;
+            padding:20px;
+            background:#fffde7;
+            border-left:5px solid #fbc02d;
+            font-size:0.95em;
+            line-height:1.6;
+            border-radius:0 4px 4px 0;
+        }
+
+        @keyframes fadeIn{
+            from{opacity:0;}
+            to{opacity:1;}
+        }
+
     </style>
 </head>
+
 <body>
 
-<div class="wrapper">
-    <div class="header-ui">
-        <img id="logoL" width="120" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_SERPAT.png" alt="SERPAT">
-        <div class="title-area">
-            <h1>INGRESO DE ESPECÍMENES</h1>
-            <small>Área de Zoología de Invertebrados</small>
+<div class="container">
+
+    <div class="header">
+
+        <img src="LOGO_SERPAT.png" alt="Logo SERPAT">
+
+        <div class="header-text">
+            <h2>Depósito de Colecciones Zoológicas</h2>
+            <p>Área Zoología de Invertebrados</p>
+            <p class="sub-p">Museo Nacional de Historia Natural de Chile</p>
         </div>
-        <img id="logoR" width="138" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_MNHN.png" alt="MNHN">
+
+        <img src="LOGO_MNHN.png" alt="Logo MNHN">
+
     </div>
 
-    <div style="background: #fdfdfd; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
-        <label>DATOS DEL PROYECTO / LEGATARIO</label>
-        <div class="grid">
-            <div class="field"><label>Legatario</label><input type="text" id="legatario" placeholder="Nombre completo"></div>
-            <div class="field"><label>Email</label><input type="email" id="email"></div>
-            <div class="field"><label>Institución</label><input type="text" id="afiliacion"></div>
-            <div class="field"><label>Fecha</label><input type="date" id="fecha_actual"></div>
-        </div>
-        
-        <label>DETALLE TAXONÓMICO</label>
-        <div class="grid">
-            <div class="field"><label>Especie</label><input type="text" id="especie" placeholder="Género especie"></div>
-            <div class="field"><label>Tipificación</label><input type="text" id="tipificacion" placeholder="Ej: Paratipo"></div>
-            <div class="field"><label>Localidad</label><input type="text" id="localidad"></div>
-            <div class="field"><label>Cantidad</label><input type="number" id="n_ind" value="1"></div>
-            <div class="field" style="justify-content: flex-end;">
-                <button class="btn btn-add" onclick="addItem()">AÑADIR A LISTA</button>
-            </div>
-        </div>
+    <div class="section-title">
+        1. Información del Legatario y Proyecto
     </div>
 
-    <table id="mainTable">
-        <thead>
-            <tr>
-                <th>Especie</th>
-                <th>Tipificación</th>
-                <th>Localidad</th>
-                <th>Cant.</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
+    <div class="form-grid">
 
-    <div style="text-align: center; margin-top: 40px;">
-        <button class="btn btn-pdf" onclick="generatePDF()">DESCARGAR FORMULARIO OFICIAL (PDF)</button>
+        <div>
+            <label>Nombre del Legatario:</label>
+            <input type="text" id="legatario">
+        </div>
+
+        <div>
+            <label>Email de contacto:</label>
+            <input type="email" id="email">
+        </div>
+
+        <div>
+            <label>Fono / Teléfono:</label>
+            <input type="text" id="fono">
+        </div>
+
+        <div>
+            <label>Afiliación Institucional:</label>
+            <input type="text" id="afiliacion">
+        </div>
+
+        <div class="span-2">
+            <label>Proyecto / Publicación asociada:</label>
+            <input type="text" id="proyecto">
+        </div>
+
+        <div>
+            <label>Fecha de Entrega:</label>
+            <input type="date" id="fecha_entrega">
+        </div>
+
     </div>
+
+    <div class="section-title">
+        2. Detalle del Material
+    </div>
+
+    <div class="form-grid">
+
+        <div>
+            <label>Especie (Género + sp.):</label>
+            <input type="text" id="especie" class="sci-name">
+        </div>
+
+        <div>
+            <label>Código de muestra:</label>
+            <input type="text" id="codigo_muestra">
+        </div>
+
+        <div>
+            <label>N° Individuos:</label>
+            <input type="number" id="n_individuos" value="1">
+        </div>
+
+        <div>
+            <label>Determinador:</label>
+            <input type="text" id="determinador">
+        </div>
+
+        <div>
+            <label>Fecha Det.:</label>
+            <input type="date" id="fecha_det">
+        </div>
+
+        <div>
+            <label>Colector(es):</label>
+            <input type="text" id="colector">
+        </div>
+
+        <div>
+            <label>Fecha Recolección:</label>
+            <input type="date" id="fecha_recoleccion">
+        </div>
+
+        <div>
+            <label>Localidad:</label>
+            <input type="text" id="localidad">
+        </div>
+
+        <div>
+            <label>Coordenadas:</label>
+            <input type="text" id="coordenadas">
+        </div>
+
+        <div>
+            <label>Expedición:</label>
+            <input type="text" id="expedicion">
+        </div>
+
+        <div>
+            <label>Protocolo Muestreo:</label>
+            <input type="text" id="protocolo">
+        </div>
+
+        <div>
+
+            <label>Modo Conservación:</label>
+
+            <select id="conservacion">
+                <option value="Alcohol 70%">Alcohol 70%</option>
+                <option value="Alcohol 95% (Genético)">Alcohol 95% (Genético)</option>
+                <option value="Seco">Seco</option>
+                <option value="Montaje (Placa)">Montaje (Placa)</option>
+                <option value="Fijado en Formalina">Fijado en Formalina</option>
+            </select>
+
+        </div>
+
+        <div>
+            <label>N° Catálogo (Opcional):</label>
+            <input type="text" id="n_catalogo">
+        </div>
+
+        <div>
+            <button class="btn-add" onclick="agregarFila()">
+                + Añadir / Actualizar Ítem
+            </button>
+        </div>
+
+    </div>
+
+    <button class="btn-preview" onclick="togglePreview()">
+        Ver / Ocultar Previsualización
+    </button>
+
+    <div id="previewContainer">
+
+        <div class="table-container">
+
+            <table id="tablaMaterial">
+
+                <thead>
+
+                <tr>
+                    <th>Especie</th>
+                    <th>Cant.</th>
+                    <th>Cód. Muestra</th>
+                    <th>Localidad</th>
+                    <th>Colector</th>
+                    <th>Conservación</th>
+                    <th>Catálogo</th>
+                    <th>Editar</th>
+                    <th>Borrar</th>
+                </tr>
+
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="main-actions">
+
+        <button class="btn-pdf" onclick="exportarPDF()">
+            Descarga formato PDF (envío)
+        </button>
+
+    </div>
+
+    <div class="footer-note">
+
+        <strong>Instrucción:</strong>
+
+        Una vez finalizado y descargado el formulario con toda la información requerida,
+        firmar y enviar al curador/a correspondiente.
+
+        <br><br>
+
+        <em>
+            Los números de catálogo se entregarán una vez que el material haya sido
+            recepcionado y corroborado.
+        </em>
+
+    </div>
+
 </div>
 
 <script>
-    let db = [];
-    const urlSerpat = "https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_SERPAT.png";
-    const urlMnhn = "https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_MNHN.png";
 
-    // Función para convertir URL a Base64 real (bypass CORS)
-    async function toBase64(url) {
-        const response = await fetch(url);
-        const blob = await response.blob();
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
+    let datosMaterial = [];
+    let editIndex = -1;
+
+    function agregarFila(){
+
+        const fields = [
+            'especie',
+            'codigo_muestra',
+            'n_individuos',
+            'determinador',
+            'fecha_det',
+            'colector',
+            'fecha_recoleccion',
+            'localidad',
+            'coordenadas',
+            'expedicion',
+            'protocolo',
+            'conservacion',
+            'n_catalogo'
+        ];
+
+        const item = {};
+
+        fields.forEach(f=>{
+            item[f] = document.getElementById(f).value;
+        });
+
+        if(!item.especie || !item.localidad){
+
+            alert("Los campos 'Especie' y 'Localidad' son obligatorios.");
+
+            return;
+        }
+
+        if(editIndex >= 0){
+
+            datosMaterial[editIndex] = item;
+            editIndex = -1;
+
+        }else{
+
+            datosMaterial.push(item);
+        }
+
+        actualizarTabla();
+
+        fields.forEach(f=>{
+
+            const field = document.getElementById(f);
+
+            if(field.type !== 'select-one'){
+                field.value = '';
+            }
+        });
+
+        document.getElementById('n_individuos').value = 1;
+
+        document.getElementById('previewContainer').style.display = 'block';
+    }
+
+    function actualizarTabla(){
+
+        const tbody = document.querySelector('#tablaMaterial tbody');
+
+        tbody.innerHTML = "";
+
+        datosMaterial.forEach((i,index)=>{
+
+            tbody.innerHTML += `
+            <tr>
+
+                <td class="sci-name">${i.especie}</td>
+
+                <td>${i.n_individuos}</td>
+
+                <td>${i.codigo_muestra}</td>
+
+                <td>${i.localidad}</td>
+
+                <td>${i.colector}</td>
+
+                <td>${i.conservacion}</td>
+
+                <td>${i.n_catalogo || '---'}</td>
+
+                <td>
+                    <button class="btn-edit" onclick="editarRegistro(${index})">
+                        Editar
+                    </button>
+                </td>
+
+                <td>
+                    <button class="btn-delete" onclick="eliminarRegistro(${index})">
+                        Borrar
+                    </button>
+                </td>
+
+            </tr>
+            `;
         });
     }
 
-    function addItem() {
-        const item = {
-            especie: document.getElementById('especie').value,
-            tipificacion: document.getElementById('tipificacion').value,
-            localidad: document.getElementById('localidad').value,
-            n: document.getElementById('n_ind').value,
-            // Campos técnicos para el PDF
-            legatario: document.getElementById('legatario').value,
-            email: document.getElementById('email').value,
-            fecha: document.getElementById('fecha_actual').value
-        };
-        if(!item.especie || !item.localidad) return alert("Complete los campos básicos.");
-        db.push(item);
-        updateUI();
-        clearInputs();
+    function editarRegistro(index){
+
+        const item = datosMaterial[index];
+
+        Object.keys(item).forEach(key=>{
+
+            const field = document.getElementById(key);
+
+            if(field){
+                field.value = item[key];
+            }
+        });
+
+        editIndex = index;
+
+        window.scrollTo({
+            top:0,
+            behavior:'smooth'
+        });
     }
 
-    function editItem(index) {
-        const it = db[index];
-        document.getElementById('especie').value = it.especie;
-        document.getElementById('tipificacion').value = it.tipificacion;
-        document.getElementById('localidad').value = it.localidad;
-        document.getElementById('n_ind').value = it.n;
-        db.splice(index, 1);
-        updateUI();
+    function eliminarRegistro(index){
+
+        if(!confirm("¿Eliminar este registro?")) return;
+
+        datosMaterial.splice(index,1);
+
+        actualizarTabla();
     }
 
-    function clearInputs() {
-        ['especie', 'tipificacion', 'localidad'].forEach(id => document.getElementById(id).value = "");
-        document.getElementById('n_ind').value = 1;
+    function togglePreview(){
+
+        const container = document.getElementById('previewContainer');
+
+        container.style.display =
+            (container.style.display === 'none' || container.style.display === '')
+            ? 'block'
+            : 'none';
     }
 
-    function updateUI() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = db.map((it, i) => `
-            <tr>
-                <td><i>${it.especie}</i></td>
-                <td>${it.tipificacion || '-'}</td>
-                <td>${it.localidad}</td>
-                <td>${it.n}</td>
-                <td class="actions">
-                    <button class="edit-row" onclick="editItem(${i})">Editar</button>
-                    <button class="del-row" onclick="db.splice(${i},1);updateUI()">×</button>
-                </td>
-            </tr>
-        `).join('');
-    }
+    async function exportarPDF(){
 
-    async function generatePDF() {
-        if(db.length === 0) return alert("Agregue material a la lista.");
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4');
-        
-        try {
-            // CARGA DE LOGOS SEGURA
-            const b64Serpat = await toBase64(urlSerpat);
-            const b64Mnhn = await toBase64(urlMnhn);
+        if(datosMaterial.length === 0){
 
-            // Logos con tamaños precisos (MNHN +15%)
-            doc.addImage(b64Serpat, 'PNG', 15, 10, 35, 18);
-            doc.addImage(b64Mnhn, 'PNG', 240, 8, 42, 25); 
+            alert("No hay datos para exportar.");
 
-            // Encabezado
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(14);
-            doc.text("FORMULARIO DE INGRESO DE ESPECÍMENES", 148, 18, {align: 'center'});
-            doc.setFontSize(10);
-            doc.text("Área Zoología de Invertebrados - MNHNCL", 148, 24, {align: 'center'});
-
-            // Datos Legatario
-            doc.autoTable({
-                startY: 35,
-                theme: 'grid',
-                styles: { fontSize: 8 },
-                body: [
-                    ['Legatario:', document.getElementById('legatario').value, 'Fecha:', document.getElementById('fecha_actual').value],
-                    ['Email:', document.getElementById('email').value, 'Institución:', document.getElementById('afiliacion').value]
-                ]
-            });
-
-            // Tabla de Datos
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [['N°', 'Especie', 'Tipificación', 'Localidad', 'Cant.', 'Catálogo (Uso Interno)']],
-                body: db.map((it, i) => [i+1, it.especie, it.tipificacion, it.localidad, it.n, ""]),
-                styles: { fontSize: 7 },
-                headStyles: { fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' },
-                columnStyles: { 1: { fontStyle: 'italic' } }
-            });
-
-            // Pie de página y firmas
-            const finalY = doc.lastAutoTable.finalY + 20;
-            doc.setFontSize(8);
-            doc.text("__________________________", 60, finalY);
-            doc.text("Firma Legatario", 60, finalY + 5, {align: 'center'});
-            
-            doc.text("__________________________", 230, finalY);
-            doc.text("Andrea Martínez Salinas", 230, finalY + 5, {align: 'center'});
-            doc.setFontSize(7);
-            doc.text("Jefa Área Zoología de Invertebrados", 230, finalY + 9, {align: 'center'});
-
-            doc.save("Formulario_Ingreso_MNHN.pdf");
-
-        } catch (err) {
-            console.error(err);
-            alert("Error de conexión con los servidores de imágenes. Verifique su internet.");
+            return;
         }
+
+        const { jsPDF } = window.jspdf;
+
+        const doc = new jsPDF({
+            orientation:'landscape',
+            unit:'mm',
+            format:'a4'
+        });
+
+        const pageWidth = 297;
+        const usableWidth = 267;
+
+        const logoLeft = new Image();
+        logoLeft.src = 'LOGO_SERPAT.png';
+
+        const logoRight = new Image();
+        logoRight.src = 'LOGO_MNHN.png';
+
+        await new Promise(resolve=>{
+            logoRight.onload = resolve;
+        });
+
+        doc.addImage(logoLeft,'PNG',15,10,18,18);
+        doc.addImage(logoRight,'PNG',262,10,18,18);
+
+        doc.setFont("helvetica","bold");
+
+        doc.setFontSize(13);
+
+        doc.text(
+            "Formulario de Ingreso de Especímenes",
+            148.5,
+            18,
+            {align:"center"}
+        );
+
+        doc.text(
+            "Área Zoología de Invertebrados",
+            148.5,
+            26,
+            {align:"center"}
+        );
+
+        doc.setFontSize(8);
+
+        let y = 34;
+
+        doc.rect(15,y,190,8);
+        doc.rect(205,y,25,8);
+        doc.rect(230,y,52,8);
+
+        doc.text("Legatario:",18,y+5);
+        doc.text(document.getElementById('legatario').value || "",45,y+5);
+
+        doc.text("Fecha:",210,y+5);
+
+        doc.text(
+            new Date().toLocaleDateString(),
+            240,
+            y+5
+        );
+
+        y += 8;
+
+        doc.rect(15,y,190,8);
+        doc.rect(205,y,25,8);
+        doc.rect(230,y,52,8);
+
+        doc.text("Email:",18,y+5);
+
+        doc.text(
+            document.getElementById('email').value || "",
+            45,
+            y+5
+        );
+
+        doc.text("Fono:",210,y+5);
+
+        doc.text(
+            document.getElementById('fono').value || "",
+            240,
+            y+5
+        );
+
+        y += 8;
+
+        doc.rect(15,y,267,8);
+
+        doc.text("Afiliación Institucional:",18,y+5);
+
+        doc.text(
+            document.getElementById('afiliacion').value || "",
+            70,
+            y+5
+        );
+
+        y += 8;
+
+        doc.rect(15,y,170,8);
+        doc.rect(185,y,40,8);
+        doc.rect(225,y,57,8);
+
+        doc.text("Proyecto/Publicación:",18,y+5);
+
+        doc.text(
+            document.getElementById('proyecto').value || "",
+            65,
+            y+5
+        );
+
+        doc.text("Expedición:",190,y+5);
+
+        doc.text(
+            document.getElementById('expedicion').value || "",
+            228,
+            y+5
+        );
+
+        y += 8;
+
+        doc.rect(15,y,267,8);
+
+        doc.text("Protocolo de muestreo:",18,y+5);
+
+        doc.text(
+            document.getElementById('protocolo').value || "",
+            70,
+            y+5
+        );
+
+        y += 12;
+
+        const rows = datosMaterial.map((i,idx)=>[
+            idx + 1,
+            i.especie,
+            i.codigo_muestra,
+            i.determinador,
+            i.fecha_det,
+            i.n_individuos,
+            i.localidad,
+            i.coordenadas,
+            i.colector,
+            i.fecha_recoleccion,
+            i.conservacion,
+            i.n_catalogo
+        ]);
+
+        doc.autoTable({
+
+            startY:y,
+
+            margin:{
+                left:15,
+                right:15
+            },
+
+            tableWidth:usableWidth,
+
+            styles:{
+                fontSize:6.5,
+                cellPadding:1,
+                overflow:'linebreak',
+                valign:'middle',
+                lineWidth:0.1,
+                textColor:0
+            },
+
+            headStyles:{
+                fillColor:[240,240,240],
+                textColor:0,
+                halign:'center',
+                fontStyle:'bold'
+            },
+
+            columnStyles:{
+
+                0:{cellWidth:8,halign:'center'},
+                1:{cellWidth:34,fontStyle:'italic'},
+                2:{cellWidth:16},
+                3:{cellWidth:22},
+                4:{cellWidth:16},
+                5:{cellWidth:12,halign:'center'},
+                6:{cellWidth:25},
+                7:{cellWidth:25},
+                8:{cellWidth:24},
+                9:{cellWidth:20},
+                10:{cellWidth:17},
+                11:{cellWidth:16}
+            },
+
+            head:[[
+                "N°",
+                "Especie",
+                "Código\nmuestra",
+                "Determinador",
+                "Fecha\nDet.",
+                "N°\nInd.",
+                "Localidad",
+                "Coordenadas",
+                "Colector",
+                "Fecha\nRecolect.",
+                "Modo\nConserv.",
+                "N° Cat."
+            ]],
+
+            body:rows,
+
+            didDrawPage:function(data){
+
+                const pageCount = doc.internal.getNumberOfPages();
+
+                doc.setFontSize(8);
+
+                doc.text(
+                    `Página ${data.pageNumber} de ${pageCount}`,
+                    280,
+                    200,
+                    {align:'right'}
+                );
+            }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 18;
+
+        doc.setFontSize(8);
+
+        doc.text(
+            "Quien suscribe, ________________________________________, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile.",
+            18,
+            finalY,
+            {
+                maxWidth:255
+            }
+        );
+
+        const signY = finalY + 35;
+
+        doc.line(55,signY,105,signY);
+
+        doc.text(
+            "Firma del Legatario",
+            80,
+            signY + 5,
+            {align:'center'}
+        );
+
+        doc.line(195,signY,255,signY);
+
+        doc.text(
+            "Curador(a) / Encargado MNHN",
+            225,
+            signY + 5,
+            {align:'center'}
+        );
+
+        const leg =
+            document.getElementById('legatario').value || 'MNHN';
+
+        doc.save(`Deposito_MNHN_${leg}.pdf`);
     }
+
 </script>
+
 </body>
 </html>
