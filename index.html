@@ -614,45 +614,160 @@ async function exportarPDF(){
 
     doc.setFontSize(8);
 
-    let y = 34;
+let y = 34;
 
 doc.setDrawColor(0);
-doc.setLineWidth(0.2);
+doc.setLineWidth(0.15);
 
-doc.setFont("helvetica","bold");
-doc.setFontSize(8);
+const rowH = 7;
+
+doc.setFontSize(7.2);
 
 /* =========================
    FILA 1
 ========================= */
 
-doc.rect(15,y,28,10);
-doc.rect(43,y,152,10);
-doc.rect(195,y,25,10);
-doc.rect(220,y,62,10);
+doc.setFont("helvetica","bold");
 
-doc.text("Legatario",18,y+6);
+doc.rect(15,y,26,rowH);
+doc.rect(41,y,154,rowH);
+doc.rect(195,y,25,rowH);
+doc.rect(220,y,62,rowH);
+
+doc.text("Legatario",18,y+4.5);
 
 doc.setFont("helvetica","normal");
+
 doc.text(
     document.getElementById('legatario').value || "",
-    46,
-    y+6
+    44,
+    y+4.5
 );
 
 doc.setFont("helvetica","bold");
-doc.text("Fecha",202,y+6);
+
+doc.text("Fecha",202,y+4.5);
 
 doc.setFont("helvetica","normal");
+
 doc.text(
     new Date().toLocaleDateString(),
     228,
-    y+6
+    y+4.5
 );
 
 /* =========================
    FILA 2
 ========================= */
+
+y += rowH;
+
+doc.setFont("helvetica","bold");
+
+doc.rect(15,y,26,rowH);
+doc.rect(41,y,154,rowH);
+doc.rect(195,y,25,rowH);
+doc.rect(220,y,62,rowH);
+
+doc.text("Email",18,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('email').value || "",
+    44,
+    y+4.5
+);
+
+doc.setFont("helvetica","bold");
+
+doc.text("Fono",202,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('fono').value || "",
+    228,
+    y+4.5
+);
+
+/* =========================
+   FILA 3
+========================= */
+
+y += rowH;
+
+doc.setFont("helvetica","bold");
+
+doc.rect(15,y,45,rowH);
+doc.rect(60,y,222,rowH);
+
+doc.text("Afiliación Institucional",18,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('afiliacion').value || "",
+    63,
+    y+4.5
+);
+
+/* =========================
+   FILA 4
+========================= */
+
+y += rowH;
+
+doc.setFont("helvetica","bold");
+
+doc.rect(15,y,45,rowH);
+doc.rect(60,y,125,rowH);
+
+doc.rect(185,y,40,rowH);
+doc.rect(225,y,57,rowH);
+
+doc.text("Proyecto/Publicación",18,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('proyecto').value || "",
+    63,
+    y+4.5
+);
+
+doc.setFont("helvetica","bold");
+
+doc.text("Expedición",190,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('expedicion_general').value || "",
+    228,
+    y+4.5
+);
+
+/* =========================
+   FILA 5
+========================= */
+
+y += rowH;
+
+doc.setFont("helvetica","bold");
+
+doc.rect(15,y,45,rowH);
+doc.rect(60,y,222,rowH);
+
+doc.text("Protocolo de muestreo",18,y+4.5);
+
+doc.setFont("helvetica","normal");
+
+doc.text(
+    document.getElementById('protocolo_general').value || "",
+    63,
+    y+4.5
+);
 
 y += 10;
 
