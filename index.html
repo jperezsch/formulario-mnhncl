@@ -4,159 +4,224 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asistente de Ingreso MNHNCL</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #004d40; padding-bottom: 10px; }
-        .header img { height: 60px; }
-        h2 { color: #004d40; text-align: center; text-transform: uppercase; font-size: 1.2em; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .full-width { grid-column: span 2; }
-        button { background-color: #004d40; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px; }
-        button:hover { background-color: #00695c; }
-        .btn-pdf { background-color: #c62828; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #eee; }
-        .scientific-name { font-style: italic; }
+        :root { --primary-color: #004d40; --accent-color: #c62828; --bg-color: #f4f7f6; }
+        body { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background-color: var(--bg-color); color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        /* Cabecera Institucional */
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 25px; }
+        .header img { height: 80px; width: auto; object-fit: contain; }
+        .header-text { text-align: center; flex-grow: 1; }
+        .header-text h2 { margin: 0; color: var(--primary-color); font-size: 1.4em; text-transform: uppercase; letter-spacing: 1px; }
+        .header-text p { margin: 5px 0 0; font-weight: bold; color: #666; font-size: 0.9em; }
+
+        .section-title { background: var(--primary-color); color: white; padding: 10px 15px; font-size: 0.95em; margin-top: 25px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        
+        /* Grilla del Formulario */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 15px 0; }
+        .span-2 { grid-column: span 2; }
+        
+        label { font-weight: bold; font-size: 0.85em; color: #444; display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em; box-sizing: border-box; transition: border 0.3s; }
+        input:focus { border-color: var(--primary-color); outline: none; background: #f0fdfa; }
+
+        /* Botones */
+        .btn-group { margin: 25px 0; display: flex; gap: 12px; flex-wrap: wrap; border-top: 1px solid #eee; padding-top: 20px; }
+        button { padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9em; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-add { background-color: #2e7d32; color: white; }
+        .btn-excel { background-color: #1b5e20; color: white; }
+        .btn-pdf { background-color: var(--accent-color); color: white; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        /* Tabla de Vista Previa */
+        .table-container { overflow-x: auto; margin-top: 25px; border-radius: 8px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85em; background: white; }
+        th { background-color: #e0f2f1; color: var(--primary-color); padding: 12px; text-align: left; border-bottom: 2px solid var(--primary-color); }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        tr:hover { background-color: #f1f8e9; }
+        .sci-name { font-style: italic; font-weight: bold; color: #004d40; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <img src="LOGO_SERPAT.png" alt="SERPAT">
-        <h2>Formulario de Ingreso de Colecciones Zoológicas - MNHNCL</h2>
-        <img src="LOGO_MNHN.png" alt="MNHN">
+        <img src="LOGO_SERPAT.png" alt="Logo SERPAT">
+        <div class="header-text">
+            <h2>Ingreso de Colecciones Zoológicas</h2>
+            <p>MUSEO NACIONAL DE HISTORIA NATURAL</p>
+        </div>
+        <img src="LOGO_MNHN.png" alt="Logo MNHN">
     </div>
 
+    <div class="section-title">1. Información del Legatario y Proyecto</div>
     <div class="form-grid">
-        <div>
-            <label>Legatario / Donante:</label>
-            <input type="text" id="donante" placeholder="Nombre del investigador">
-        </div>
-        <div>
-            <label>Fecha de Ingreso:</label>
-            <input type="date" id="fecha_ingreso">
-        </div>
-        <div class="full-width">
-            <label>Orden / Familia:</label>
-            <input type="text" id="taxonomia" placeholder="Ej: Amphipoda: Hadziidae">
-        </div>
+        <div><label>Nombre del Legatario:</label><input type="text" id="legatario" placeholder="Ej: Juan Pérez"></div>
+        <div><label>Email de contacto:</label><input type="email" id="email" placeholder="ejemplo@correo.cl"></div>
+        <div><label>Fono / Teléfono:</label><input type="text" id="fono" placeholder="+56 9 ..."></div>
+        <div><label>Afiliación Institucional:</label><input type="text" id="afiliacion" placeholder="Universidad o Centro"></div>
+        <div class="span-2"><label>Proyecto / Publicación asociada:</label><input type="text" id="proyecto" placeholder="Nombre del proyecto o paper"></div>
+        <div><label>Fecha de Entrega:</label><input type="date" id="fecha_entrega"></div>
     </div>
 
-    <hr>
-
+    <div class="section-title">2. Detalle del Material</div>
     <div class="form-grid">
+        <div><label>Especie (Género + sp.):</label><input type="text" id="especie" class="sci-name" placeholder="Ej: Orchestoidea tuberculata"></div>
+        <div><label>Código de muestra:</label><input type="text" id="codigo_muestra" placeholder="Ej: JP-001"></div>
+        <div><label>N° Individuos:</label><input type="number" id="n_individuos" value="1" min="1"></div>
+        <div><label>Determinador:</label><input type="text" id="determinador"></div>
+        <div><label>Fecha Det.:</label><input type="date" id="fecha_det"></div>
+        <div><label>Colector(es):</label><input type="text" id="colector"></div>
+        <div><label>Fecha Recolección:</label><input type="date" id="fecha_recoleccion"></div>
+        <div><label>Localidad:</label><input type="text" id="localidad" placeholder="Provincia, Región"></div>
+        <div><label>Coordenadas:</label><input type="text" id="coordenadas" placeholder="DMS o Decimales"></div>
+        <div><label>Expedición:</label><input type="text" id="expedicion"></div>
+        <div><label>Protocolo Muestreo:</label><input type="text" id="protocolo"></div>
         <div>
-            <label>Género y Especie:</label>
-            <input type="text" id="especie" placeholder="Ej: Metacrangonyx sp.">
+            <label>Modo Conservación:</label>
+            <select id="conservacion">
+                <option value="Alcohol 70%">Alcohol 70%</option>
+                <option value="Alcohol 95% (Genético)">Alcohol 95% (Genético)</option>
+                <option value="Seco">Seco</option>
+                <option value="Montaje (Placa)">Montaje (Placa)</option>
+                <option value="Fijado en Formalina">Fijado en Formalina</option>
+            </select>
         </div>
-        <div>
-            <label>Localidad:</label>
-            <input type="text" id="localidad" placeholder="Ej: Bahía Inútil, Magallanes">
-        </div>
-        <div>
-            <label>Coordenadas (DMS o DD):</label>
-            <input type="text" id="coordenadas" placeholder="-53.16, -70.91">
-        </div>
-        <div>
-            <label>N° Ejemplares:</label>
-            <input type="number" id="cantidad" value="1">
-        </div>
+        <div><label>N° Catálogo (Opcional):</label><input type="text" id="n_catalogo" placeholder="Solo si ya posee"></div>
     </div>
 
-    <button onclick="agregarFila()">Añadir a la Lista</button>
-    <button onclick="exportarExcel()">Descargar Excel</button>
-    <button onclick="exportarPDF()" class="btn-pdf">Descargar Acta PDF</button>
+    <div class="btn-group">
+        <button class="btn-add" onclick="agregarFila()">+ Añadir Ítem a la Lista</button>
+        <button class="btn-excel" onclick="exportarExcel()">Descargar Formato Excel</button>
+        <button class="btn-pdf" onclick="exportarPDF()">Generar Acta para Firma (PDF)</button>
+    </div>
 
-    <table id="tablaMaterial">
-        <thead>
-            <tr>
-                <th>Taxón</th>
-                <th>Localidad</th>
-                <th>Coordenadas</th>
-                <th>Cant.</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
-    </table>
+    <div class="table-container">
+        <table id="tablaMaterial">
+            <thead>
+                <tr>
+                    <th>Especie</th>
+                    <th>Ind.</th>
+                    <th>Cód. Muestra</th>
+                    <th>Localidad</th>
+                    <th>Colector</th>
+                    <th>Conservación</th>
+                    <th>Catálogo</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
     let datosMaterial = [];
 
     function agregarFila() {
-        const especie = document.getElementById('especie').value;
-        const localidad = document.getElementById('localidad').value;
-        const coordenadas = document.getElementById('coordenadas').value;
-        const cantidad = document.getElementById('cantidad').value;
+        const fields = [
+            'especie', 'codigo_muestra', 'n_individuos', 'determinador', 
+            'fecha_det', 'colector', 'fecha_recoleccion', 'localidad', 
+            'coordenadas', 'expedicion', 'protocolo', 'conservacion', 'n_catalogo'
+        ];
+        
+        const item = {};
+        fields.forEach(f => item[f] = document.getElementById(f).value);
 
-        if(!especie || !localidad) return alert("Complete los campos básicos");
+        if(!item.especie || !item.localidad) {
+            alert("Error: Los campos 'Especie' y 'Localidad' son obligatorios.");
+            return;
+        }
 
-        const item = { especie, localidad, coordenadas, cantidad };
         datosMaterial.push(item);
         actualizarTabla();
         
-        // Limpiar campos de especie para el siguiente
+        // Limpiamos campos específicos pero mantenemos datos de contexto para el siguiente ítem
         document.getElementById('especie').value = "";
-        document.getElementById('cantidad').value = "1";
+        document.getElementById('codigo_muestra').value = "";
+        document.getElementById('n_individuos').value = "1";
     }
 
     function actualizarTabla() {
         const tbody = document.querySelector('#tablaMaterial tbody');
         tbody.innerHTML = "";
-        datosMaterial.forEach(item => {
-            const row = `<tr>
-                <td class="scientific-name">${item.especie}</td>
-                <td>${item.localidad}</td>
-                <td>${item.coordenadas}</td>
-                <td>${item.cantidad}</td>
+        datosMaterial.forEach(i => {
+            tbody.innerHTML += `<tr>
+                <td class="sci-name">${i.especie}</td>
+                <td>${i.n_individuos}</td>
+                <td>${i.codigo_muestra}</td>
+                <td>${i.localidad}</td>
+                <td>${i.colector}</td>
+                <td>${i.conservacion}</td>
+                <td>${i.n_catalogo || '---'}</td>
             </tr>`;
-            tbody.innerHTML += row;
         });
     }
 
     function exportarExcel() {
-        const ws = XLSX.utils.json_to_sheet(datosMaterial);
+        if(datosMaterial.length === 0) return alert("No hay datos para exportar");
+        
+        const legatarioInfo = {
+            Legatario: document.getElementById('legatario').value,
+            Email: document.getElementById('email').value,
+            Afiliacion: document.getElementById('afiliacion').value,
+            Proyecto: document.getElementById('proyecto').value
+        };
+
+        const dataExcel = datosMaterial.map(i => ({ ...legatarioInfo, ...i }));
+        const ws = XLSX.utils.json_to_sheet(dataExcel);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Ingreso_MNHN");
-        XLSX.writeFile(wb, "Ingreso_MNHN_" + document.getElementById('donante').value + ".xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Material_Zoológico");
+        XLSX.writeFile(wb, `Ingreso_MNHN_${legatarioInfo.Legatario || 'SinNombre'}.xlsx`);
     }
 
     function exportarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        if(datosMaterial.length === 0) return alert("No hay datos para el acta");
         
-        doc.setFontSize(16);
-        doc.text("ACTA DE DEPÓSITO DE MATERIAL ZOOLÓGICO", 105, 20, { align: "center" });
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4');
+        
+        const leg = document.getElementById('legatario').value;
+        const proj = document.getElementById('proyecto').value;
+
+        doc.setFontSize(14);
+        doc.text("ACTA DE DEPÓSITO DE MATERIAL BIOLÓGICO - MNHNCL", 148, 20, { align: "center" });
         
         doc.setFontSize(10);
-        doc.text(`Donante: ${document.getElementById('donante').value}`, 20, 40);
-        doc.text(`Fecha: ${document.getElementById('fecha_ingreso').value}`, 20, 47);
-        doc.text(`Grupo: ${document.getElementById('taxonomia').value}`, 20, 54);
+        doc.text(`Legatario: ${leg}`, 20, 35);
+        doc.text(`Proyecto: ${proj}`, 20, 42);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 250, 35, { align: "right" });
 
-        const rows = datosMaterial.map(i => [i.especie, i.localidad, i.coordenadas, i.cantidad]);
+        const rows = datosMaterial.map(i => [
+            i.especie, i.n_individuos, i.codigo_muestra, i.localidad, 
+            i.colector, i.fecha_recoleccion, i.conservacion, i.n_catalogo
+        ]);
         
         doc.autoTable({
-            startY: 65,
-            head: [['Especie', 'Localidad', 'Coordenadas', 'Cant.']],
+            startY: 50,
+            head: [['Especie', 'Cant', 'Cód. Muestra', 'Localidad', 'Colector', 'Fecha Rec.', 'Modo', 'N° Cat']],
             body: rows,
-            styles: { fontStyle: 'italic' },
-            headStyles: { fillColor: [0, 77, 64] }
+            headStyles: { fillColor: [0, 77, 64] },
+            styles: { fontSize: 8, font: 'helvetica' },
+            columnStyles: { 0: { fontStyle: 'italic' } }
         });
 
-        doc.save("Acta_MNHN.pdf");
+        // Espacio para firmas
+        const finalY = doc.previousAutoTable.finalY + 30;
+        doc.line(40, finalY, 100, finalY);
+        doc.text("Firma Legatario", 70, finalY + 5, { align: "center" });
+        
+        doc.line(190, finalY, 250, finalY);
+        doc.text("Curador(a) / Encargado MNHN", 220, finalY + 5, { align: "center" });
+
+        doc.save(`Acta_Ingreso_MNHN_${leg}.pdf`);
     }
 </script>
 
 </body>
 </html>
- 
