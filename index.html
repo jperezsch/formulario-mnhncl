@@ -13,9 +13,9 @@
         .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 20px; }
-        .logo-serpat { height: 80px; width: auto; }
-        .logo-mnhn { height: 95px; width: auto; }
-        .header-text { text-align: center; }
+        .logo-serpat { height: 80px; width: auto; min-width: 100px; }
+        .logo-mnhn { height: 95px; width: auto; min-width: 100px; }
+        .header-text { text-align: center; flex-grow: 1; }
         .header-text h2 { margin: 0; font-size: 1.4em; color: var(--primary-color); text-transform: uppercase; }
 
         .section-title { background: var(--primary-color); color: white; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-radius: 4px; font-size: 0.85em; text-transform: uppercase; }
@@ -38,13 +38,13 @@
 
 <div class="container">
     <div class="header">
-        <img id="imgSerpat" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_SERPAT.png" class="logo-serpat" alt="SERPAT">
+        <img id="imgSerpat" crossorigin="anonymous" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_SERPAT.png" class="logo-serpat" alt="SERPAT">
         <div class="header-text">
             <h2>Formulario de Ingreso de Especímenes</h2>
             <p>Área Zoología de Invertebrados</p>
             <p style="font-size: 0.8em; color: #666;">Museo Nacional de Historia Natural de Chile</p>
         </div>
-        <img id="imgMnhn" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_MNHN.png" class="logo-mnhn" alt="MNHN">
+        <img id="imgMnhn" crossorigin="anonymous" src="https://raw.githubusercontent.com/MNHN-Zoologia-Invertebrados/assets/main/LOGO_MNHN.png" class="logo-mnhn" alt="MNHN">
     </div>
 
     <div class="section-title">1. Datos del Legatario y Proyecto</div>
@@ -97,21 +97,26 @@
     </table>
 
     <div class="main-actions">
-        <button class="btn-pdf" onclick="exportarPDF()">GENERAR FORMULARIO PDF</button>
+        <button id="btnPdf" class="btn-pdf" onclick="exportarPDF()">GENERAR FORMULARIO PDF</button>
     </div>
 </div>
 
 <script>
     let items = [];
 
-    // Función para convertir imagen a Base64 y evitar errores de CORS en el PDF
+    // Función segura para obtener Base64
     function getBase64Image(img) {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        return canvas.toDataURL("image/png");
+        try {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            return canvas.toDataURL("image/png");
+        } catch (e) {
+            console.error("Error en conversión Base64:", e);
+            return null;
+        }
     }
 
     function agregarItem() {
@@ -129,7 +134,7 @@
             modo: document.getElementById('conservacion').value
         };
         
-        if(!item.especie || !item.localidad) return alert("Especie y Localidad son campos obligatorios.");
+        if(!item.especie || !item.localidad) return alert("Especie y Localidad son obligatorios.");
         items.push(item);
         renderTabla();
         limpiarCamposItem();
@@ -137,8 +142,6 @@
 
     function editarItem(index) {
         const it = items[index];
-        const fields = ['especie', 'tipificacion', 'codigo_muestra', 'determinador', 'fecha_det', 'localidad', 'coordenadas', 'colector', 'fecha_recoleccion', 'conservacion'];
-        
         document.getElementById('especie').value = it.especie;
         document.getElementById('tipificacion').value = it.tipificacion;
         document.getElementById('codigo_muestra').value = it.codigo;
@@ -180,70 +183,78 @@
     }
 
     function exportarPDF() {
-        if(items.length === 0) return alert("Agregue al menos un espécimen a la lista.");
+        if(items.length === 0) return alert("La lista de especímenes está vacía.");
         
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'mm', 'a4');
         const margin = 10;
         const pageWidth = 297;
 
-        try {
-            // Convertimos logos a base64 justo antes de usarlos
-            const base64Serpat = getBase64Image(document.getElementById('imgSerpat'));
-            const base64Mnhn = getBase64Image(document.getElementById('imgMnhn'));
+        const imgS = document.getElementById('imgSerpat');
+        const imgM = document.getElementById('imgMnhn');
 
-            doc.addImage(base64Serpat, 'PNG', margin, 10, 35, 18);
-            doc.addImage(base64Mnhn, 'PNG', pageWidth - margin - 42, 8, 42, 25);
-
-            doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text("Formulario de Ingreso de Especímenes", pageWidth/2, 18, {align: 'center'});
-            doc.setFontSize(10);
-            doc.text("Área Zoología de Invertebrados - MNHNCL", pageWidth/2, 24, {align: 'center'});
-
-            doc.autoTable({
-                startY: 32,
-                margin: {left: margin},
-                tableWidth: pageWidth - (margin*2),
-                theme: 'grid',
-                styles: {fontSize: 8, cellPadding: 1.2},
-                body: [
-                    ['Legatario:', document.getElementById('legatario').value, 'Fecha:', document.getElementById('fecha_actual').value],
-                    ['Email:', document.getElementById('email').value, 'Fono:', document.getElementById('fono').value],
-                    ['Afiliación:', {content: document.getElementById('afiliacion').value, colSpan: 3}],
-                    ['Proyecto:', document.getElementById('proyecto').value, 'Expedición:', document.getElementById('expedicion').value],
-                    ['Protocolo:', {content: document.getElementById('protocolo').value, colSpan: 3}]
-                ],
-                columnStyles: {0:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}, 2:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}}
-            });
-
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                margin: {left: margin},
-                tableWidth: pageWidth - (margin*2),
-                head: [['N°', 'Especie', 'Tipific.', 'Cód. Muestra', 'Determinador', 'Fecha Det', 'N°', 'Localidad', 'Coords', 'Colector', 'Fecha Rec', 'Modo', 'Catálogo']],
-                body: items.map((it, idx) => [idx+1, it.especie, it.tipificacion, it.codigo, it.determinador, it.fecha_det, it.n, it.localidad, it.coords, it.colector, it.fecha_rec, it.modo, ""]),
-                styles: {fontSize: 6.5, overflow: 'linebreak', cellPadding: 0.8},
-                headStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold', halign: 'center'},
-                columnStyles: {1: {fontStyle: 'italic', cellWidth: 32}, 7: {cellWidth: 38}}
-            });
-
-            const finalY = doc.lastAutoTable.finalY + 12;
-            doc.setFontSize(8); doc.setFont("helvetica", "normal");
-            const nombreLeg = document.getElementById('legatario').value || '_______________________';
-            const declaracion = `Quien suscribe, ${nombreLeg}, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile, para su depósito permanente en las colecciones biológicas allí resguardadas.`;
-            doc.text(doc.splitTextToSize(declaracion, pageWidth - 30), 15, finalY);
-
-            const firmaY = finalY + 30;
-            doc.line(40, firmaY, 110, firmaY);
-            doc.text("Firma del Legatario", 75, firmaY + 5, {align: 'center'});
-            doc.line(180, firmaY, 250, firmaY);
-            doc.text("Andrea Martínez Salinas - Jefa Área Zoología Invertebrados", 215, firmaY + 5, {align: 'center'});
-
-            doc.save(`Formulario_MNHN_${nombreLeg.replace(/\s+/g, '_')}.pdf`);
-        } catch (e) {
-            console.error(e);
-            alert("Error crítico al procesar los logos. Asegúrate de que las imágenes se visualizan en la parte superior de la pantalla antes de descargar.");
+        // Verificación de carga de imágenes
+        if (!imgS.complete || !imgM.complete || imgS.naturalWidth === 0 || imgM.naturalWidth === 0) {
+            alert("Los logos aún se están cargando o no están disponibles. Por favor, refresca la página y espera 2 segundos.");
+            return;
         }
+
+        const base64Serpat = getBase64Image(imgS);
+        const base64Mnhn = getBase64Image(imgM);
+
+        if (!base64Serpat || !base64Mnhn) {
+            alert("Error al procesar los logos. Intente nuevamente.");
+            return;
+        }
+
+        doc.addImage(base64Serpat, 'PNG', margin, 10, 35, 18);
+        doc.addImage(base64Mnhn, 'PNG', pageWidth - margin - 42, 8, 42, 25);
+
+        doc.setFontSize(14); doc.setFont("helvetica", "bold");
+        doc.text("Formulario de Ingreso de Especímenes", pageWidth/2, 18, {align: 'center'});
+        doc.setFontSize(10);
+        doc.text("Área Zoología de Invertebrados - MNHNCL", pageWidth/2, 24, {align: 'center'});
+
+        doc.autoTable({
+            startY: 32,
+            margin: {left: margin},
+            tableWidth: pageWidth - (margin*2),
+            theme: 'grid',
+            styles: {fontSize: 8, cellPadding: 1.2},
+            body: [
+                ['Legatario:', document.getElementById('legatario').value, 'Fecha:', document.getElementById('fecha_actual').value],
+                ['Email:', document.getElementById('email').value, 'Fono:', document.getElementById('fono').value],
+                ['Afiliación:', {content: document.getElementById('afiliacion').value, colSpan: 3}],
+                ['Proyecto:', document.getElementById('proyecto').value, 'Expedición:', document.getElementById('expedicion').value],
+                ['Protocolo:', {content: document.getElementById('protocolo').value, colSpan: 3}]
+            ],
+            columnStyles: {0:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}, 2:{fillColor:[240,240,240], fontStyle:'bold', cellWidth:25}}
+        });
+
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 5,
+            margin: {left: margin},
+            tableWidth: pageWidth - (margin*2),
+            head: [['N°', 'Especie', 'Tipific.', 'Cód. Muestra', 'Determinador', 'Fecha Det', 'N°', 'Localidad', 'Coords', 'Colector', 'Fecha Rec', 'Modo', 'Catálogo']],
+            body: items.map((it, idx) => [idx+1, it.especie, it.tipificacion, it.codigo, it.determinador, it.fecha_det, it.n, it.localidad, it.coords, it.colector, it.fecha_rec, it.modo, ""]),
+            styles: {fontSize: 6.5, overflow: 'linebreak', cellPadding: 0.8},
+            headStyles: {fillColor: [255, 255, 255], textColor: [0, 0, 0], lineWidth: 0.1, fontStyle: 'bold', halign: 'center'},
+            columnStyles: {1: {fontStyle: 'italic', cellWidth: 32}, 7: {cellWidth: 38}}
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 12;
+        doc.setFontSize(8); doc.setFont("helvetica", "normal");
+        const nombreLeg = document.getElementById('legatario').value || '_______________________';
+        const declaracion = `Quien suscribe, ${nombreLeg}, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile, para su depósito permanente en las colecciones biológicas allí resguardadas.`;
+        doc.text(doc.splitTextToSize(declaracion, pageWidth - 30), 15, finalY);
+
+        const firmaY = finalY + 30;
+        doc.line(40, firmaY, 110, firmaY);
+        doc.text("Firma del Legatario", 75, firmaY + 5, {align: 'center'});
+        doc.line(180, firmaY, 250, firmaY);
+        doc.text("Andrea Martínez Salinas - Jefa Área Zoología Invertebrados", 215, firmaY + 5, {align: 'center'});
+
+        doc.save(`Formulario_MNHN_${nombreLeg.replace(/\s+/g, '_')}.pdf`);
     }
 </script>
 </body>
