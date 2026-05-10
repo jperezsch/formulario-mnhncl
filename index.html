@@ -582,11 +582,6 @@ async function exportarPDF(){
         format:'a4'
     });
 
-    const leftMargin = 15;
-    const rightMargin = 15;
-
-    const totalWidth = 267;
-
     const logoLeft = new Image();
     logoLeft.src = 'LOGO_SERPAT.png';
 
@@ -716,11 +711,11 @@ async function exportarPDF(){
         startY:y,
 
         margin:{
-            left:leftMargin,
-            right:rightMargin
+            left:15,
+            right:15
         },
 
-        tableWidth:totalWidth,
+        tableWidth:267,
 
         styles:{
             fontSize:6,
@@ -745,18 +740,18 @@ async function exportarPDF(){
 
         columnStyles:{
 
-            0:{cellWidth:8,halign:'center'},
+            0:{cellWidth:7,halign:'center'},
             1:{cellWidth:33},
             2:{cellWidth:15},
-            3:{cellWidth:22},
+            3:{cellWidth:23},
             4:{cellWidth:15},
             5:{cellWidth:12},
             6:{cellWidth:24},
-            7:{cellWidth:24},
+            7:{cellWidth:26},
             8:{cellWidth:24},
-            9:{cellWidth:20},
-            10:{cellWidth:17},
-            11:{cellWidth:18}
+            9:{cellWidth:21},
+            10:{cellWidth:18},
+            11:{cellWidth:20}
         },
 
         head:[[
@@ -781,11 +776,17 @@ async function exportarPDF(){
 
     doc.setFontSize(8);
 
+    const nombreLegatario =
+        document.getElementById('legatario').value ||
+        "________________________________________";
+
     doc.text(
-        "Quien suscribe, ________________________________________, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile.",
+        `Quien suscribe, ${nombreLegatario}, declara que el material antes individualizado ha sido donado al Área Zoología de Invertebrados del Museo Nacional de Historia Natural de Chile, para su depósito permanente en las colecciones biológicas allí resguardadas. Además, señala que no existe por parte del MNHNCL ninguna obligación de carácter monetario, ni de exhibición de los especímenes, solo el compromiso de resguardarlos adecuadamente.`,
         18,
         finalY,
-        {maxWidth:255}
+        {
+            maxWidth:255
+        }
     );
 
     const signY = finalY + 35;
