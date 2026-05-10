@@ -1,2 +1,162 @@
-# formulario-mnhncl
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de Ingreso MNHNCL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #004d40; padding-bottom: 10px; }
+        .header img { height: 60px; }
+        h2 { color: #004d40; text-align: center; text-transform: uppercase; font-size: 1.2em; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .full-width { grid-column: span 2; }
+        button { background-color: #004d40; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        button:hover { background-color: #00695c; }
+        .btn-pdf { background-color: #c62828; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        .scientific-name { font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="LOGO_SERPAT.png" alt="SERPAT">
+        <h2>Formulario de Ingreso de Colecciones Zoológicas - MNHNCL</h2>
+        <img src="LOGO_MNHN.png" alt="MNHN">
+    </div>
+
+    <div class="form-grid">
+        <div>
+            <label>Legatario / Donante:</label>
+            <input type="text" id="donante" placeholder="Nombre del investigador">
+        </div>
+        <div>
+            <label>Fecha de Ingreso:</label>
+            <input type="date" id="fecha_ingreso">
+        </div>
+        <div class="full-width">
+            <label>Orden / Familia:</label>
+            <input type="text" id="taxonomia" placeholder="Ej: Amphipoda: Hadziidae">
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="form-grid">
+        <div>
+            <label>Género y Especie:</label>
+            <input type="text" id="especie" placeholder="Ej: Metacrangonyx sp.">
+        </div>
+        <div>
+            <label>Localidad:</label>
+            <input type="text" id="localidad" placeholder="Ej: Bahía Inútil, Magallanes">
+        </div>
+        <div>
+            <label>Coordenadas (DMS o DD):</label>
+            <input type="text" id="coordenadas" placeholder="-53.16, -70.91">
+        </div>
+        <div>
+            <label>N° Ejemplares:</label>
+            <input type="number" id="cantidad" value="1">
+        </div>
+    </div>
+
+    <button onclick="agregarFila()">Añadir a la Lista</button>
+    <button onclick="exportarExcel()">Descargar Excel</button>
+    <button onclick="exportarPDF()" class="btn-pdf">Descargar Acta PDF</button>
+
+    <table id="tablaMaterial">
+        <thead>
+            <tr>
+                <th>Taxón</th>
+                <th>Localidad</th>
+                <th>Coordenadas</th>
+                <th>Cant.</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
+
+<script>
+    let datosMaterial = [];
+
+    function agregarFila() {
+        const especie = document.getElementById('especie').value;
+        const localidad = document.getElementById('localidad').value;
+        const coordenadas = document.getElementById('coordenadas').value;
+        const cantidad = document.getElementById('cantidad').value;
+
+        if(!especie || !localidad) return alert("Complete los campos básicos");
+
+        const item = { especie, localidad, coordenadas, cantidad };
+        datosMaterial.push(item);
+        actualizarTabla();
+        
+        // Limpiar campos de especie para el siguiente
+        document.getElementById('especie').value = "";
+        document.getElementById('cantidad').value = "1";
+    }
+
+    function actualizarTabla() {
+        const tbody = document.querySelector('#tablaMaterial tbody');
+        tbody.innerHTML = "";
+        datosMaterial.forEach(item => {
+            const row = `<tr>
+                <td class="scientific-name">${item.especie}</td>
+                <td>${item.localidad}</td>
+                <td>${item.coordenadas}</td>
+                <td>${item.cantidad}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function exportarExcel() {
+        const ws = XLSX.utils.json_to_sheet(datosMaterial);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Ingreso_MNHN");
+        XLSX.writeFile(wb, "Ingreso_MNHN_" + document.getElementById('donante').value + ".xlsx");
+    }
+
+    function exportarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(16);
+        doc.text("ACTA DE DEPÓSITO DE MATERIAL ZOOLÓGICO", 105, 20, { align: "center" });
+        
+        doc.setFontSize(10);
+        doc.text(`Donante: ${document.getElementById('donante').value}`, 20, 40);
+        doc.text(`Fecha: ${document.getElementById('fecha_ingreso').value}`, 20, 47);
+        doc.text(`Grupo: ${document.getElementById('taxonomia').value}`, 20, 54);
+
+        const rows = datosMaterial.map(i => [i.especie, i.localidad, i.coordenadas, i.cantidad]);
+        
+        doc.autoTable({
+            startY: 65,
+            head: [['Especie', 'Localidad', 'Coordenadas', 'Cant.']],
+            body: rows,
+            styles: { fontStyle: 'italic' },
+            headStyles: { fillColor: [0, 77, 64] }
+        });
+
+        doc.save("Acta_MNHN.pdf");
+    }
+</script>
+
+</body>
+</html>
  
