@@ -282,10 +282,10 @@ td{
         <input type="text" id="protocolo_general">
     </div>
 
-    <div>
-        <label>Fecha de Entrega</label>
-        <input type="date" id="fecha_entrega">
-    </div>
+   <div>
+    <label>Fecha de Entrega</label>
+    <input type="date" id="fecha_entrega" readonly>
+</div>
 
 </div>
 
@@ -420,6 +420,19 @@ Una vez finalizado el ingreso de la información, descargar el formulario, firma
 let datosMaterial = [];
 let editIndex = -1;
 
+/* Fecha automática */
+
+window.addEventListener('DOMContentLoaded',()=>{
+
+    const hoy = new Date();
+
+    const fecha =
+        hoy.getFullYear() + '-' +
+        String(hoy.getMonth() + 1).padStart(2,'0') + '-' +
+        String(hoy.getDate()).padStart(2,'0');
+
+    document.getElementById('fecha_entrega').value = fecha;
+});
 function limpiarFormulario(){
 
     const ids = [
